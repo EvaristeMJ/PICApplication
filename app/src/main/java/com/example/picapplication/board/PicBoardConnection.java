@@ -1,6 +1,6 @@
-package com.example.chat.board;
+package com.example.picapplication.board;
 
-import com.example.chat.database.Game;
+import com.example.picapplication.database.Game;
 
 /**
  * A pic board interface

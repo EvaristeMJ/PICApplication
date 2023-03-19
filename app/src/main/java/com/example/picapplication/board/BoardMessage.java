@@ -1,4 +1,4 @@
-package com.example.chat.board;
+package com.example.picapplication.board;
 
 /**
  * A board message interface
