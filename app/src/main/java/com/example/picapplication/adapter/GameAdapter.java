@@ -19,7 +19,7 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder
     private List<Game> games;
 
     public GameAdapter(List<Game> games) {
-        this.games = games;
+        this.games = Game.initGameList();
     }
 
     @NonNull

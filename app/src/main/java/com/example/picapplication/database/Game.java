@@ -1,5 +1,10 @@
 package com.example.picapplication.database;
 
+import com.example.picapplication.R;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class Game {
     private String gameName,gamePitch,gameDescription,gameTime,gameRules,gameFile,author;
     private int id,image,gamePopularity;
@@ -28,23 +33,15 @@ public class Game {
         gamePopularity = 0;
         id = 0;
     }
-    /*
     public static List<Game> initGameList(){
-        ArrayList<Game> games = new ArrayList<>();
-        games.add(new Game("Game1","This the first game, this is a very interesting pitch\n You can play with your friends, that is really funny",
-                "Game description",com.google.android.material.R.drawable.test_level_drawable));
-        games.add(new Game("Game2","This the second game, this is a very interesting pitch\n You can play with your friends, that is really funny",
-                "Game description",com.google.android.material.R.drawable.test_level_drawable));
-        games.add(new Game("Game3","This the third game, this is a very interesting pitch\n You can play with your friends, that is really funny",
-                "Game description",com.google.android.material.R.drawable.test_level_drawable));
-        games.add(new Game("Game4","This the fourth game, this is a very interesting pitch\n You can play with your friends, that is really funny",
-                "Game description",com.google.android.material.R.drawable.test_level_drawable));
-        games.add(new Game("Game5","This the fifth game, this is a very interesting pitch\n You can play with your friends, that is really funny",
-                "Game description",com.google.android.material.R.drawable.test_level_drawable));
+        ArrayList games = new ArrayList<Game>();
+        games.add(new Game(1,"Game 1","Game 1 pitch","Game 1 description", R.drawable.ic_menu_camera,"Game 1 time","Game 1 rules","Game 1 file",0,"Game 1 author"));
+        games.add(new Game(1,"Game 1","Game 1 pitch","Game 1 description", R.drawable.ic_menu_camera,"Game 1 time","Game 1 rules","Game 1 file",0,"Game 1 author"));
+        games.add(new Game(1,"Game 1","Game 1 pitch","Game 1 description", R.drawable.ic_menu_camera,"Game 1 time","Game 1 rules","Game 1 file",0,"Game 1 author"));
+        games.add(new Game(1,"Game 1","Game 1 pitch","Game 1 description", R.drawable.ic_menu_camera,"Game 1 time","Game 1 rules","Game 1 file",0,"Game 1 author"));
+        games.add(new Game(1,"Game 1","Game 1 pitch","Game 1 description", R.drawable.ic_menu_camera,"Game 1 time","Game 1 rules","Game 1 file",0,"Game 1 author"));
         return games;
     }
-
-     */
     // Getters and setters
 
     public String getGameName() {

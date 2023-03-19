@@ -5,6 +5,10 @@
 
     <group android:checkableBehavior="single">
         <item
+            android:id="@+id/nav_games"
+            android:icon="@drawable/ic_baseline_games_24"
+            android:title="@string/games" />
+        <item
             android:id="@+id/nav_account"
             android:icon="@drawable/ic_baseline_person_24"
             android:title="@string/account" />
@@ -12,6 +16,8 @@
             android:id="@+id/nav_games_created"
             android:icon="@drawable/ic_baseline_games_24"
             android:title="@string/create_games" />
+
+
         <item
             android:id="@+id/nav_log_out"
             android:icon="@drawable/ic_baseline_logout_24"

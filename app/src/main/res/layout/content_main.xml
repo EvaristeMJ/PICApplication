@@ -19,15 +19,5 @@
         app:navGraph="@navigation/mobile_navigation"
         app:layout_constraintBottom_toBottomOf="parent">
     </fragment>
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/GameList"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:clipToPadding="false"
-        android:orientation="vertical"
-        android:padding="5dp"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        tools:ignore="MissingConstraints">
-    </androidx.recyclerview.widget.RecyclerView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
