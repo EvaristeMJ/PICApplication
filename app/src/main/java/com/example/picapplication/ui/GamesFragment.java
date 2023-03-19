@@ -41,4 +41,9 @@ public class GamesFragment extends Fragment {
             binding.GameList.setVisibility(View.VISIBLE);
         }
     }
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
+    }
 }

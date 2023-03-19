@@ -47,12 +47,12 @@
 
     </TextView>
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/modifyButton"
+        android:id="@+id/playButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
         android:layout_marginTop="4dp"
-        android:text="@string/modify"
+        android:text="@string/play"
         android:textColor="@color/white"
         android:textSize="@dimen/_13ssp"
         android:textStyle="bold"
