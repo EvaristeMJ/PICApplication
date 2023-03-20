@@ -12,10 +12,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.picapplication.R;
 import com.example.picapplication.database.Game;
+import com.example.picapplication.databinding.GameCreationItemBinding;
 
 import java.util.List;
 
-public class UserGameAdapter extends RecyclerView.Adapter<UserGameAdapter.GameViewHolder>{
+public class UserGameAdapter extends RecyclerView.Adapter<UserGameAdapter.GameViewHolder> {
     private List<Game> games;
 
     public UserGameAdapter(List<Game> games) {
@@ -45,10 +46,11 @@ public class UserGameAdapter extends RecyclerView.Adapter<UserGameAdapter.GameVi
         return games.size();
     }
 
-    class GameViewHolder extends RecyclerView.ViewHolder{
+    class GameViewHolder extends RecyclerView.ViewHolder {
         ConstraintLayout constraintLayout;
         ImageView gameIcon;
-        TextView gameName,gamePitch;
+        TextView gameName, gamePitch;
+
         public GameViewHolder(@NonNull View itemView) {
             super(itemView);
             constraintLayout = itemView.findViewById(R.id.layout_game_creation_item);
@@ -56,10 +58,18 @@ public class UserGameAdapter extends RecyclerView.Adapter<UserGameAdapter.GameVi
             gameName = itemView.findViewById(R.id.gameName);
             gamePitch = itemView.findViewById(R.id.gamePitch);
         }
-        void bindGame(final Game game){
+
+        void bindGame(final Game game) {
             gameIcon.setImageResource(game.getImage());
             gameName.setText(game.getGameName());
             gamePitch.setText(game.getGamePitch());
+            GameCreationItemBinding binding = GameCreationItemBinding.bind(itemView);
+            binding.modifyButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                }
+            });
         }
     }
 }
