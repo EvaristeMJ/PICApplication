@@ -13,17 +13,18 @@ import com.example.picapplication.database.DatabaseHelper;
 import com.example.picapplication.database.User;
 import com.example.picapplication.databinding.ActivitySignInBinding;
 import com.example.picapplication.sql.PicDatabase;
+import com.example.picapplication.utilities.PreferenceManager;
 
 public class SignInActivity extends AppCompatActivity {
     private ActivitySignInBinding binding;
     private PicDatabase picDatabase;
-    private com.example.chat.utilities.PreferenceManager preferenceManager;
+    private com.example.picapplication.utilities.PreferenceManager preferenceManager;
     public User userLogged;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivitySignInBinding.inflate(getLayoutInflater());
-        preferenceManager = new com.example.chat.utilities.PreferenceManager(getApplicationContext());
+        preferenceManager = new PreferenceManager(getApplicationContext());
         setContentView(binding.getRoot());
         setListeners();
     }
