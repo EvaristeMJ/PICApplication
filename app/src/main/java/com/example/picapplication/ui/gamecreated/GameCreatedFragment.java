@@ -37,7 +37,7 @@ public class GameCreatedFragment extends Fragment {
     }
     private void displayLastGames(){
         //List<Game> games = picDatabase.getLastGamesCreated();
-        List<Game> games = Game.initGameList();
+        List<Game> games = Game.initGameList(getResources());
         if(games.size()>0){
             GameAdapter gameAdapter = new GameAdapter(games);
             binding.GameList.setAdapter(gameAdapter);

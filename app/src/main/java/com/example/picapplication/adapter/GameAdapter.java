@@ -1,5 +1,6 @@
 package com.example.picapplication.adapter;
 
+import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +20,7 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder
     private List<Game> games;
 
     public GameAdapter(List<Game> games) {
-        this.games = Game.initGameList();
+        this.games = games;
     }
 
     @NonNull
@@ -57,7 +58,8 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder
             gamePitch = itemView.findViewById(R.id.gamePitch);
         }
         void bindGame(final Game game){
-            gameIcon.setImageResource(game.getImage());
+            Bitmap bitmap = game.getImage();
+            gameIcon.setImageBitmap(bitmap);
             gameName.setText(game.getGameName());
             gamePitch.setText(game.getGamePitch());
         }

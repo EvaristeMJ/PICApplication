@@ -78,7 +78,7 @@ public interface PicDatabase {
      * @param gameImage
      * @param author the user that creates the game
      */
-    void addGame(String gameName, String gamePitch, String gameTime, String gameRules, String gameDescription, String gameFile, Matrix gameImage, User author);
+    void addGame(String gameName, String gamePitch, String gameTime, String gameRules, String gameDescription, String gameFile, String gameImage, User author);
 
     /**
      * Gets the games from a SQL query in the database
@@ -125,6 +125,11 @@ public interface PicDatabase {
      */
     public void deleteGame(Game game);
 
+    /**
+     * Gets the game selected by the user
+     * @return Game the game selected
+     */
+    public Game getGameSelected();
     /**
      * Launches a game
      * @param user the user that plays the game

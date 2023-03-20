@@ -1,5 +1,7 @@
 package com.example.picapplication.database;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 
 import com.example.picapplication.sql.PicDatabase;
@@ -7,12 +9,14 @@ import com.example.chat.utilities.Constants;
 import com.example.picapplication.sql.ConnectionHelper;
 import com.example.picapplication.database.User;
 
+import java.sql.Array;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
 public class DatabaseHelper implements PicDatabase {
@@ -174,7 +178,7 @@ public class DatabaseHelper implements PicDatabase {
     }
 
     @Override
-    public void addGame(String gameName, String gamePitch, String gameTime, String gameRules,String gameDescription, String gameFile, Matrix gameImage, User author) {
+    public void addGame(String gameName, String gamePitch, String gameTime, String gameRules, String gameDescription, String gameFile, String gameImage, User author) {
         String sqlStatement = "INSERT INTO " + Constants.KEY_COLLECTION_GAMES +
                 "(" + Constants.KEY_GAME_NAME+ "," +Constants.KEY_GAME_PITCH+ "," +Constants.KEY_GAME_DESCRIPTION +","+
                 Constants.KEY_GAME_TIME+"," + Constants.KEY_GAME_RULES + "," + Constants.KEY_GAME_FILE +","+Constants.KEY_GAME_IMAGE+","+Constants.KEY_GAME_POPULARITY +","
@@ -191,7 +195,7 @@ public class DatabaseHelper implements PicDatabase {
             pstmt.setString(4,gameTime);
             pstmt.setString(5,gameRules);
             pstmt.setString(6,gameFile);
-            pstmt.setString(8,"0");
+            pstmt.setString(8, gameImage);
             pstmt.setString(9,author.getUsername());
 
             int affectedRows = pstmt.executeUpdate();
@@ -219,7 +223,7 @@ public class DatabaseHelper implements PicDatabase {
                         rs.getString(Constants.KEY_GAME_NAME),
                         rs.getString(Constants.KEY_GAME_PITCH),
                         rs.getString(Constants.KEY_GAME_DESCRIPTION),
-                        0,
+                        BitmapFactory.decodeFile(rs.getString(Constants.KEY_GAME_IMAGE)),
                         rs.getString(Constants.KEY_GAME_TIME),
                         rs.getString(Constants.KEY_GAME_RULES),
                         rs.getString(Constants.KEY_GAME_FILE),
@@ -303,6 +307,9 @@ public class DatabaseHelper implements PicDatabase {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+    public Game getGameSelected() {
+        return gameSelected;
     }
 
 }

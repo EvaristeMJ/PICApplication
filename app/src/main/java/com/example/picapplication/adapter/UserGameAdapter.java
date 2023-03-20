@@ -60,7 +60,7 @@ public class UserGameAdapter extends RecyclerView.Adapter<UserGameAdapter.GameVi
         }
 
         void bindGame(final Game game) {
-            gameIcon.setImageResource(game.getImage());
+            gameIcon.setImageBitmap(game.getImage());
             gameName.setText(game.getGameName());
             gamePitch.setText(game.getGamePitch());
             GameCreationItemBinding binding = GameCreationItemBinding.bind(itemView);

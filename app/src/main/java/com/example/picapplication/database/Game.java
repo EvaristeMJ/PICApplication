@@ -1,15 +1,31 @@
 package com.example.picapplication.database;
 
+import static com.makeramen.roundedimageview.RoundedDrawable.drawableToBitmap;
+
+import android.content.Context;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
+
+import androidx.drawerlayout.widget.DrawerLayout;
+
 import com.example.picapplication.R;
 
+import java.sql.Array;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
 public class Game {
     private String gameName,gamePitch,gameDescription,gameTime,gameRules,gameFile,author;
-    private int id,image,gamePopularity;
+    private int id,gamePopularity;
+    private Bitmap image;
 
-    public Game(int id, String gameName, String gamePitch, String gameDescription, int image, String gameTime, String gameRules, String gameFile, int gamePopularity, String author) {
+    public Game(int id, String gameName, String gamePitch, String gameDescription, Bitmap image, String gameTime, String gameRules, String gameFile, int gamePopularity, String author) {
         this.gameName = gameName;
         this.gamePitch = gamePitch;
         this.image = image;
@@ -29,17 +45,18 @@ public class Game {
         gameRules = null;
         gameTime = null;
         author = null;
-        image = 0;
+        image = null;
         gamePopularity = 0;
         id = 0;
     }
-    public static List<Game> initGameList(){
+    public static List<Game> initGameList(Resources resources) {
         ArrayList games = new ArrayList<Game>();
-        games.add(new Game(1,"Game 1","Game 1 pitch","Game 1 description", R.drawable.ic_menu_camera,"Game 1 time","Game 1 rules","Game 1 file",0,"Game 1 author"));
-        games.add(new Game(1,"Game 1","Game 1 pitch","Game 1 description", R.drawable.ic_menu_camera,"Game 1 time","Game 1 rules","Game 1 file",0,"Game 1 author"));
-        games.add(new Game(1,"Game 1","Game 1 pitch","Game 1 description", R.drawable.ic_menu_camera,"Game 1 time","Game 1 rules","Game 1 file",0,"Game 1 author"));
-        games.add(new Game(1,"Game 1","Game 1 pitch","Game 1 description", R.drawable.ic_menu_camera,"Game 1 time","Game 1 rules","Game 1 file",0,"Game 1 author"));
-        games.add(new Game(1,"Game 1","Game 1 pitch","Game 1 description", R.drawable.ic_menu_camera,"Game 1 time","Game 1 rules","Game 1 file",0,"Game 1 author"));
+        Bitmap bitmap = drawableToBitmap(resources.getDrawable(R.drawable.ic_menu_camera));
+        games.add(new Game(1,"Game 1","Game 1 pitch","Game 1 description", bitmap,"Game 1 time","Game 1 rules","Game 1 file",0,"Game 1 author"));
+        games.add(new Game(1,"Game 1","Game 1 pitch","Game 1 description", bitmap,"Game 1 time","Game 1 rules","Game 1 file",0,"Game 1 author"));
+        games.add(new Game(1,"Game 1","Game 1 pitch","Game 1 description", bitmap,"Game 1 time","Game 1 rules","Game 1 file",0,"Game 1 author"));
+        games.add(new Game(1,"Game 1","Game 1 pitch","Game 1 description", bitmap,"Game 1 time","Game 1 rules","Game 1 file",0,"Game 1 author"));
+        games.add(new Game(1,"Game 1","Game 1 pitch","Game 1 description", bitmap,"Game 1 time","Game 1 rules","Game 1 file",0,"Game 1 author"));
         return games;
     }
     // Getters and setters
@@ -92,11 +109,11 @@ public class Game {
         this.gameFile = gameFile;
     }
 
-    public int getImage() {
+    public Bitmap getImage() {
         return image;
     }
 
-    public void setImage(int image) {
+    public void setImage(Bitmap image) {
         this.image = image;
     }
     public String getAuthor() {
