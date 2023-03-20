@@ -1,4 +1,4 @@
-package com.example.chat.utilities;
+package com.example.picapplication.utilities;
 
 import android.content.Context;
 import android.content.SharedPreferences;

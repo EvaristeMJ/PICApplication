@@ -1,4 +1,4 @@
-package com.example.chat.utilities;
+package com.example.picapplication.utilities;
 
 public class Constants {
     public static final String KEY_COLLECTION_USERS = "users";
@@ -20,4 +20,12 @@ public class Constants {
     public static final String KEY_GAME_AUTHOR = "gameAuthor";
     public static final String KEY_GAME_IMAGE = "gameImage";
     public static final String KEY_GAME_POPULARITY = "gamePopularity";
+    public static final String KEY_COLLECTION_GAME_INFO = "gameInfo";
+    public static final String KEY_GAME_INFO_ID = "gameInfoId";
+    public static final String KEY_GAME_FIRST_INFO_NAME = "gameFirstInfoName";
+    public static final String KEY_GAME_SECOND_INFO_NAME = "gameSecondInfoName";
+    public static final String KEY_GAME_THIRD_INFO_NAME = "gameThirdInfoName";
+    public static final String KEY_GAME_FOURTH_INFO_NAME = "gameFourthInfoName";
+    public static final String KEY_GAME_FIFTH_INFO_NAME = "gameFifthInfoName";
+    public static final String KEY_GAME_BACKGROUND = "gameBackground";
 }

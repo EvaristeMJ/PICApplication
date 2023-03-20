@@ -5,7 +5,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 
 import com.example.picapplication.sql.PicDatabase;
-import com.example.chat.utilities.Constants;
+import com.example.picapplication.utilities.Constants;
 import com.example.picapplication.sql.ConnectionHelper;
 import com.example.picapplication.database.User;
 
@@ -209,6 +209,7 @@ public class DatabaseHelper implements PicDatabase {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        addGameInfo(id);
     }
 
     @Override
@@ -308,6 +309,80 @@ public class DatabaseHelper implements PicDatabase {
             e.printStackTrace();
         }
     }
+
+    @Override
+    public GameInfo getGameInfo(int gameId) {
+        GameInfo gameInfo = null;
+        try {
+            Connection conn = ConnectionHelper.connection();
+            String sqlStatement = "SELECT * FROM " + Constants.KEY_COLLECTION_GAME_INFO + " WHERE " + Constants.KEY_GAME_ID + " = " + gameId;
+            PreparedStatement pstmt = conn.prepareStatement(sqlStatement);
+            ResultSet rs = pstmt.executeQuery();
+            if(rs.next()){
+                gameInfo = new GameInfo(rs.getString(Constants.KEY_GAME_FIRST_INFO_NAME),
+                        rs.getString(Constants.KEY_GAME_SECOND_INFO_NAME),
+                        rs.getString(Constants.KEY_GAME_THIRD_INFO_NAME),
+                        rs.getString(Constants.KEY_GAME_FOURTH_INFO_NAME),
+                        rs.getString(Constants.KEY_GAME_FIFTH_INFO_NAME),
+                        BitmapFactory.decodeFile(rs.getString(Constants.KEY_GAME_BACKGROUND)));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return gameInfo;
+    }
+
+    @Override
+    public void addGameInfo(int gameId) {
+        try {
+            Connection conn = ConnectionHelper.connection();
+            String sqlStatement = "INSERT INTO " + Constants.KEY_COLLECTION_GAME_INFO + " (" + Constants.KEY_GAME_ID + ", " + Constants.KEY_GAME_FIRST_INFO_NAME + ", " + Constants.KEY_GAME_SECOND_INFO_NAME + ", " + Constants.KEY_GAME_THIRD_INFO_NAME + ", " + Constants.KEY_GAME_FOURTH_INFO_NAME + ", " + Constants.KEY_GAME_FIFTH_INFO_NAME + ", " + Constants.KEY_GAME_BACKGROUND + ") VALUES (?,?,?,?,?,?,?)";
+            PreparedStatement pstmt = conn.prepareStatement(sqlStatement);
+            pstmt.setInt(1, gameId);
+            pstmt.setString(2, "First info");
+            pstmt.setString(3, "Second info");
+            pstmt.setString(4, "Third info");
+            pstmt.setString(5, "Fourth info");
+            pstmt.setString(6, "Fifth info");
+            pstmt.setString(7, "");
+            pstmt.executeUpdate();
+            conn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void updateGameInfo(int gameId,String firstInfoName, String secondInfoName, String thirdInfoName, String fourthInfoName, String fifthInfoName) {
+        try {
+            Connection conn = ConnectionHelper.connection();
+            String sqlStatement = "UPDATE " + Constants.KEY_COLLECTION_GAME_INFO + " SET " + Constants.KEY_GAME_FIRST_INFO_NAME + " = ?, " + Constants.KEY_GAME_SECOND_INFO_NAME + " = ?, " + Constants.KEY_GAME_THIRD_INFO_NAME + " = ?, " + Constants.KEY_GAME_FOURTH_INFO_NAME + " = ?, " + Constants.KEY_GAME_FIFTH_INFO_NAME + " = ? WHERE " + Constants.KEY_GAME_ID + " = ?";
+            PreparedStatement pstmt = conn.prepareStatement(sqlStatement);
+            pstmt.setString(1, firstInfoName);
+            pstmt.setString(2, secondInfoName);
+            pstmt.setString(3, thirdInfoName);
+            pstmt.setString(4, fourthInfoName);
+            pstmt.setString(5, fifthInfoName);
+            pstmt.executeUpdate();
+            conn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void deleteGameInfo(int gameId) {
+        try {
+            Connection conn = ConnectionHelper.connection();
+            String sqlStatement = "DELETE FROM " + Constants.KEY_COLLECTION_GAME_INFO + " WHERE " + Constants.KEY_GAME_ID + " = " + gameId;
+            PreparedStatement pstmt = conn.prepareStatement(sqlStatement);
+            pstmt.executeUpdate();
+            conn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     public Game getGameSelected() {
         return gameSelected;
     }

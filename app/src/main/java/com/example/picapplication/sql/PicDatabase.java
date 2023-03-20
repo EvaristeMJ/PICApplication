@@ -3,6 +3,7 @@ package com.example.picapplication.sql;
 import android.graphics.Matrix;
 
 import com.example.picapplication.database.Game;
+import com.example.picapplication.database.GameInfo;
 import com.example.picapplication.database.User;
 
 import java.util.List;
@@ -136,5 +137,14 @@ public interface PicDatabase {
      * @param game the game to play
      */
     public void startPlayingGame(User user, Game game);
+
+    /**
+     * Gets the game info of a game
+     * @param gameId the id of the game
+     */
+    public GameInfo getGameInfo(int gameId);
+    public void addGameInfo(int gameId);
+    public void updateGameInfo(int gameID,String firstInfoName,String secondInfoName,String thirdInfoName,String fourthInfoName,String fifthInfoName);
+    public void deleteGameInfo(int gameId);
 
 }
