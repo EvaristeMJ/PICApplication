@@ -1,18 +1,22 @@
 package com.example.picapplication.database;
 
+import android.graphics.Bitmap;
+
 import java.util.ArrayList;
 
 public class User {
     private String username;
     private String password;
     private int id;
+    private Bitmap profilePicture;
     private ArrayList<Integer> gamesPlayed;
 
-    public User(String username,String password,int id){
+    public User(String username,String password,int id,Bitmap profilePicture){
         this.password = password;
         this.username = username;
         this.id = id;
         gamesPlayed = new ArrayList<>();
+        this.profilePicture = profilePicture;
     }
 
     public String getUsername() {
@@ -41,6 +45,9 @@ public class User {
     }
     public int getId() {
         return id;
+    }
+    public void setProfilePicture(Bitmap profilePicture) {
+        this.profilePicture = profilePicture;
     }
     public void playGame(int gameId){
         gamesPlayed.add(gameId);

@@ -30,4 +30,9 @@ public interface PicBoardConnection {
      * Send the game choose by the user to the board
      */
     public void loadGame(Game game);
+    /**
+     * Send a message
+     */
+    public void sendMessage(BoardMessage message);
+    public void setReceiver(BoardMessageReceiver receiver);
 }

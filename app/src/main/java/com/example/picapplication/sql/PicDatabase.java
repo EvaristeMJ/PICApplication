@@ -38,6 +38,11 @@ public interface PicDatabase {
     public void updateGame(int gameId,String gameName,String gamePitch,String gameTime,String gameRules,String GameFile,User editor);
 
     /**
+     * Change the profile picture of the user logged
+     * @param profilePicture
+     */
+    public void changeProfilePicture(String profilePicture);
+    /**
      * Changes the username of the user logged
      * @param newUsername
      */

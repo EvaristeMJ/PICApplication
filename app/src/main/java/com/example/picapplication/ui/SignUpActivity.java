@@ -3,23 +3,25 @@ package com.example.picapplication.ui;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.preference.Preference;
 import android.view.View;
 import android.widget.Toast;
 
 import com.example.picapplication.R;
 import com.example.picapplication.databinding.ActivitySignUpBinding;
 import com.example.picapplication.sql.PicDatabase;
+import com.example.picapplication.utilities.PreferenceManager;
 
 public class SignUpActivity extends AppCompatActivity {
     private ActivitySignUpBinding binding;
-    private com.example.chat.utilities.PreferenceManager preferenceManager;
+    private PreferenceManager preferenceManager;
     private PicDatabase picDatabase;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivitySignUpBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        preferenceManager = new com.example.chat.utilities.PreferenceManager(getApplicationContext());
+        preferenceManager = new PreferenceManager(getApplicationContext());
         setListeners();
     }
     private void setListeners(){

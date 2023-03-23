@@ -14,7 +14,6 @@ public class ConnectionHelper {
             Connect to PostgreSQL database
             return a Connection object
         */
-        //return DriverManager.getConnection("jdbc:postgresql://localhost/dontknow","sa","pic");
-        return null;
+        return DriverManager.getConnection("jdbc:postgresql://localhost/dontknow","sa","pic");
     }
 }

@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 
 import com.example.picapplication.sql.PicDatabase;
+import com.example.picapplication.utilities.BitmapMethod;
 import com.example.picapplication.utilities.Constants;
 import com.example.picapplication.sql.ConnectionHelper;
 import com.example.picapplication.database.User;
@@ -20,23 +21,27 @@ import java.util.Base64;
 import java.util.List;
 
 public class DatabaseHelper implements PicDatabase {
+
     private User userLogged;
     private Game gameSelected;
+    private Bitmap defaultProfilePicture; //TODO: set default profile picture
     public static int USER_NOT_FOUND = -1;
     public static int WRONG_PASSWORD = -2;
 
     @Override
     public void addUser(String username, String password) {
         String sqlStatement = "INSERT INTO " + Constants.KEY_COLLECTION_USERS+
-                "("+Constants.KEY_NAME+","+Constants.KEY_PASSWORD+","+Constants.KEY_GAMES_PLAYED+") " + "VALUES(?,?,?)";
+                "("+Constants.KEY_NAME+","+Constants.KEY_PASSWORD+","+ Constants.KEY_PROFILE_PICTURE +","+Constants.KEY_GAMES_PLAYED+") " + "VALUES(?,?,?,?)";
         int id = 0;
+        String encodedImage = BitmapMethod.encodeBitmap(defaultProfilePicture);
         try {
             Connection conn = ConnectionHelper.connection();
             PreparedStatement pstmt = conn.prepareStatement(sqlStatement,
                     Statement.RETURN_GENERATED_KEYS);
             pstmt.setString(1,username);
             pstmt.setString(2,password);
-            pstmt.setString(3,"");
+            pstmt.setString(3,encodedImage);
+            pstmt.setString(4,"");
 
             int affectedRows = pstmt.executeUpdate();
             if(affectedRows > 0){
@@ -72,7 +77,8 @@ public class DatabaseHelper implements PicDatabase {
             if(rs.next()){
                 if(rs.getString(Constants.KEY_PASSWORD).equals(password)){
                     int id = rs.getInt(Constants.KEY_USER_ID);
-                    userLogged = new User(rs.getString(Constants.KEY_NAME),rs.getString(Constants.KEY_PASSWORD),id);
+                    userLogged = new User(rs.getString(Constants.KEY_NAME),rs.getString(Constants.KEY_PASSWORD),id,
+                            BitmapMethod.decodeBitmap(rs.getString(Constants.KEY_PROFILE_PICTURE)));
                     userLogged.setGamesPlayed(rs.getString(Constants.KEY_GAMES_PLAYED));
                     return id;
                 }
@@ -145,6 +151,21 @@ public class DatabaseHelper implements PicDatabase {
     public User getUserLogged() {
         return userLogged;
     }
+    @Override
+    public void changeProfilePicture(String encodedPicture){
+        try {
+            Connection conn = ConnectionHelper.connection();
+            String sqlStatement = "UPDATE " + Constants.KEY_COLLECTION_USERS + " SET " + Constants.KEY_PROFILE_PICTURE + " = ? WHERE " + Constants.KEY_USER_ID + " = ?";
+            PreparedStatement pstmt = conn.prepareStatement(sqlStatement);
+            pstmt.setString(1,encodedPicture);
+            pstmt.setInt(2,userLogged.getId());
+            pstmt.executeUpdate();
+            conn.close();
+            userLogged.setProfilePicture(BitmapMethod.decodeBitmap(encodedPicture));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
     @Override
     public void changePassword(String newPassword) {
@@ -195,7 +216,8 @@ public class DatabaseHelper implements PicDatabase {
             pstmt.setString(4,gameTime);
             pstmt.setString(5,gameRules);
             pstmt.setString(6,gameFile);
-            pstmt.setString(8, gameImage);
+            pstmt.setString(7, gameImage);
+            pstmt.setInt(8,0);
             pstmt.setString(9,author.getUsername());
 
             int affectedRows = pstmt.executeUpdate();
@@ -319,12 +341,15 @@ public class DatabaseHelper implements PicDatabase {
             PreparedStatement pstmt = conn.prepareStatement(sqlStatement);
             ResultSet rs = pstmt.executeQuery();
             if(rs.next()){
+                /*
                 gameInfo = new GameInfo(rs.getString(Constants.KEY_GAME_FIRST_INFO_NAME),
                         rs.getString(Constants.KEY_GAME_SECOND_INFO_NAME),
                         rs.getString(Constants.KEY_GAME_THIRD_INFO_NAME),
                         rs.getString(Constants.KEY_GAME_FOURTH_INFO_NAME),
                         rs.getString(Constants.KEY_GAME_FIFTH_INFO_NAME),
                         BitmapFactory.decodeFile(rs.getString(Constants.KEY_GAME_BACKGROUND)));
+
+                 */
             }
         } catch (SQLException e) {
             e.printStackTrace();
