@@ -11,6 +11,8 @@ public interface BoardMessage {
     public static final int FOURTH_INFORMATION = 4;
     public static final int FIFTH_INFORMATION = 5;
     public static final int RESET_BOARD = 6;
+    public static final int GAME_OVER = 7;
+    public static final int GAME_START = 8;
     /**
      * @return the message
      */

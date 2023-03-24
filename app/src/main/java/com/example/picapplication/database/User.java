@@ -8,6 +8,7 @@ public class User {
     private String username;
     private String password;
     private int id;
+    private int idBoard;
     private Bitmap profilePicture;
     private ArrayList<Integer> gamesPlayed;
 
@@ -15,6 +16,7 @@ public class User {
         this.password = password;
         this.username = username;
         this.id = id;
+        this.idBoard = 0;
         gamesPlayed = new ArrayList<>();
         this.profilePicture = profilePicture;
     }
@@ -42,6 +44,12 @@ public class User {
             }
         }
         return games;
+    }
+    public void setIdBoard(int idBoard) {
+        this.idBoard = idBoard;
+    }
+    public int getIdBoard() {
+        return idBoard;
     }
     public int getId() {
         return id;

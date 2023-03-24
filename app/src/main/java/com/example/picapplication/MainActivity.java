@@ -1,9 +1,13 @@
 package com.example.picapplication;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Menu;
 
+import com.example.picapplication.board.BoardMessage;
+import com.example.picapplication.board.BoardMessageReceiver;
+import com.example.picapplication.ui.GameScreenActivity;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
 
@@ -16,7 +20,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.picapplication.databinding.ActivityMainBinding;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements BoardMessageReceiver {
 
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityMainBinding binding;
@@ -49,6 +53,17 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupWithNavController(navigationView, navController);
     }
 
+    /**
+     * This method is called when a message is received from the board
+     * It launches the game screen activity
+     * @param message
+     */
+    @Override
+    public void onReceive(BoardMessage message) {
+        if(message.getType() == BoardMessage.GAME_START){
+            startActivity(new Intent(this, GameScreenActivity.class));
+        }
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.

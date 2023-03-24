@@ -9,8 +9,9 @@ import com.example.picapplication.database.Game;
 public interface PicBoardConnection {
     /**
      * Connect the application to the board
+     * @return the id of the user for the board (from 1 to 4)
      */
-    public void connect();
+    public int connect();
     /**
      * Disconnect the application from the board
      */
@@ -20,7 +21,6 @@ public interface PicBoardConnection {
      *         false otherwise
      */
     public boolean isConnected();
-
     /**
      * Send a message
      * to reset the board
@@ -31,8 +31,13 @@ public interface PicBoardConnection {
      */
     public void loadGame(Game game);
     /**
-     * Send a message
+     * Send a message to the receivers
      */
     public void sendMessage(BoardMessage message);
-    public void setReceiver(BoardMessageReceiver receiver);
+
+    /**
+     * Add a receiver to the list of receivers
+     * @param receiver
+     */
+    public void addReceiver(BoardMessageReceiver receiver);
 }

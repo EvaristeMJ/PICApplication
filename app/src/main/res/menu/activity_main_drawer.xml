@@ -16,6 +16,10 @@
             android:id="@+id/nav_games_created"
             android:icon="@drawable/ic_baseline_games_24"
             android:title="@string/create_games" />
+        <item
+            android:id="@+id/nav_connect"
+            android:icon="@drawable/ic_baseline_bluetooth_searching_24"
+            android:title="@string/connect_board" />
 
 
         <item

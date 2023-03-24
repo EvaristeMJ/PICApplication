@@ -57,6 +57,12 @@ public class GameScreenActivity extends AppCompatActivity implements BoardMessag
         binding.fifthInfo.setText(informationName[4] + " : " + information[4]);
     }
 
+    /**
+     * This method is called when a message is received from the board
+     * It updates the information on the screen
+     * It also shares the card information with the user (Text to speech)
+     * @param message
+     */
     @Override
     public void onReceive(BoardMessage message) {
         switch(message.getType()){
