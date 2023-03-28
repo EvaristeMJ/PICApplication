@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 
 import com.example.picapplication.R;
+import com.example.picapplication.board.BoardConnection;
 import com.example.picapplication.board.BoardMessage;
 import com.example.picapplication.board.BoardMessageReceiver;
 import com.example.picapplication.board.PicBoardConnection;
@@ -14,6 +15,7 @@ import com.example.picapplication.database.GameInfo;
 import com.example.picapplication.databinding.ActivityGameScreenBinding;
 import com.example.picapplication.database.PicDatabase;
 
+import java.util.ArrayList;
 import java.util.Locale;
 
 public class GameScreenActivity extends AppCompatActivity implements BoardMessageReceiver {
@@ -23,7 +25,12 @@ public class GameScreenActivity extends AppCompatActivity implements BoardMessag
     private String[] informationName;
     private String[] information;
     private String cardInfo;
-    private PicBoardConnection boardConnection;
+    private String ruleInfo = "Rule Information";
+    private PicBoardConnection boardConnection = new BoardConnection();
+    private boolean shareCardInfoTTS = false;
+    private boolean shareRuleInfoTTS = false;
+    private boolean shareRuleInfo = false;
+    private ArrayList<BoardMessage> boardMessages = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,12 +38,14 @@ public class GameScreenActivity extends AppCompatActivity implements BoardMessag
         boardConnection.addReceiver(this);
         setContentView(R.layout.activity_game_screen);
         binding = ActivityGameScreenBinding.inflate(getLayoutInflater());
+        /*
         Game game = database.getGameSelected();
         GameInfo gameInfo = game.getGameInfo();
         informationName = gameInfo.getNameInformation();
         information = gameInfo.getInformation();
         binding.backgroundView.setImageBitmap(game.getImage());
         updateView();
+         */
 
         textToSpeech = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
             @Override
@@ -49,14 +58,69 @@ public class GameScreenActivity extends AppCompatActivity implements BoardMessag
         textToSpeech.speak(text,TextToSpeech.QUEUE_FLUSH,null);
     }
     public void shareCardInfo(){
-        speak(cardInfo);
+        if(shareCardInfoTTS){
+            speak(cardInfo);
+        }
+    }
+    private void initBoardMessages(){
+    }
+
+    /**
+     * Wait for the card info to be shared before sharing the rule info
+     * This is done to avoid the user being overwhelmed with information
+     */
+    public void shareRuleInfo(){
+        if(!textToSpeech.isSpeaking()){
+            speak(ruleInfo);
+        }
     }
     private void updateView(){
         binding.firstInfo.setText(informationName[0] + " : " + information[0]);
         binding.secondInfo.setText(informationName[1] + " : " + information[1]);
         binding.thirdInfo.setText(informationName[2] + " : " + information[2]);
         binding.fourthInfo.setText(informationName[3] + " : " + information[3]);
-        binding.fifthInfo.setText(informationName[4] + " : " + information[4]);
+        binding.fifthInfo.setText(ruleInfo);
+    }
+    private void HandleMessage(BoardMessage message){
+        switch(message.getType()){
+            case BoardMessage.RULE_INFORMATION:
+                if(shareRuleInfo){
+                    ruleInfo = message.getMessage();
+                    updateView();
+                    if(shareRuleInfoTTS){
+                        shareRuleInfo();
+                    }
+                }
+                ruleInfo = "";
+                break;
+            case BoardMessage.CARD_INFORMATION:
+                cardInfo = message.getMessage();
+                shareCardInfo();
+                break;
+            case BoardMessage.MAIN_INFORMATION:
+                binding.firstInfo.setText(message.getMessage());
+                break;
+            case BoardMessage.SECOND_INFORMATION:
+                binding.secondInfo.setText(message.getMessage());
+                break;
+            case BoardMessage.THIRD_INFORMATION:
+                binding.thirdInfo.setText(message.getMessage());
+                break;
+            case BoardMessage.FOURTH_INFORMATION:
+                binding.fourthInfo.setText(message.getMessage());
+                break;
+            case BoardMessage.FIFTH_INFORMATION:
+                binding.fifthInfo.setText(message.getMessage());
+                break;
+            case BoardMessage.RESET_BOARD:
+                binding.firstInfo.setText("First Information");
+                binding.secondInfo.setText("Second Information");
+                binding.thirdInfo.setText("Third Information");
+                binding.fourthInfo.setText("Fourth Information");
+                binding.fifthInfo.setText("Fifth Information");
+                break;
+        }
+        updateView();
     }
 
     /**
@@ -68,6 +132,16 @@ public class GameScreenActivity extends AppCompatActivity implements BoardMessag
     @Override
     public void onReceive(BoardMessage message) {
         switch(message.getType()){
+            case BoardMessage.RULE_INFORMATION:
+                if(shareRuleInfo){
+                    ruleInfo = message.getMessage();
+                    updateView();
+                    if(shareRuleInfoTTS){
+                        shareRuleInfo();
+                    }
+                }
+                ruleInfo = "";
+                break;
             case BoardMessage.CARD_INFORMATION:
                 cardInfo = message.getMessage();
                 shareCardInfo();

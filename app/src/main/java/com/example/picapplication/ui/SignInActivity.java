@@ -33,16 +33,13 @@ public class SignInActivity extends AppCompatActivity {
             public void onClick(View view) {
                 DatabaseHelper databaseHelper =  (DatabaseHelper) picDatabase;
                 databaseHelper.defaultLogin();
-                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                startActivity(new Intent(getApplicationContext(), SignUpActivity.class));
             }
         });
         binding.buttonSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //signIn(); TODO uncomment this line
-                DatabaseHelper databaseHelper =  (DatabaseHelper) picDatabase;
-                databaseHelper.setDefaultUser(binding.inputUsername.getText().toString());
-                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                signIn();
             }
         });
     }
@@ -55,9 +52,6 @@ public class SignInActivity extends AppCompatActivity {
         else if(binding.inputPassword.getText().toString().trim().isEmpty()){
             showToast("Enter password");
             return false;
-        }
-        else if(!Patterns.EMAIL_ADDRESS.matcher(binding.inputUsername.getText().toString().trim()).matches()){
-            showToast("Enter valid email");
         }
         return true;
     }

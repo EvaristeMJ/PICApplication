@@ -36,4 +36,30 @@ public class BitmapMethod {
         byte[] decodedString = Base64.decode(encodedString, Base64.DEFAULT);
         return BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
     }
+    public static Bitmap getDefaultProfilePicture(){
+        return decodeBitmap(Constants.DEFAULT_ENCODED_PICTURE);
+    }
+
+    /**
+     * Reduce the size of the bitmap to 150x150
+     * @param bitmap
+     * @return
+     */
+    public static Bitmap reduceBitmap(Bitmap bitmap){
+        int previewWidth = 150;
+        int previewHeight = bitmap.getHeight() * previewWidth / bitmap.getWidth();
+        return Bitmap.createScaledBitmap(bitmap, previewWidth, previewHeight, false);
+    }
+    public static Bitmap compressBitmap(Bitmap bitmap){
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 50, byteArrayOutputStream);
+        byte[] byteArray = byteArrayOutputStream .toByteArray();
+        return BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
+    }
+    public static Bitmap standardBitmap(Bitmap bitmap){
+        return compressBitmap(reduceBitmap(bitmap));
+    }
+    public static Bitmap JPEGBitmap(String path){
+        return BitmapFactory.decodeFile(path);
+    }
 }

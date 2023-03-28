@@ -11,41 +11,69 @@ import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HttpConnection {
+public class HttpConnection{
     private String url;
-    private CloseableHttpClient httpClient;
-    private JSONObject response;
-    private List<NameValuePair> params = new ArrayList<>();
-
+    private JSONObject params = new JSONObject();
+    private JSONObject response = new JSONObject();
     public HttpConnection(String url){
         this.url = url;
-        httpClient = HttpClients.createDefault();
     }
-    public void send(){
+    public void addParam(String key, String value){
         try {
-            HttpPost httpPost = new HttpPost(url);
-            httpPost.setEntity(new UrlEncodedFormEntity(params));
-            CloseableHttpResponse response = httpClient.execute(httpPost);
-            String responseString = EntityUtils.toString(response.getEntity());
-            this.response = new JSONObject(responseString);
-        } catch (IOException e) {
-            e.printStackTrace();
+            params.put(key,value);
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
-    public void setParams(List<NameValuePair> params){
-        this.params = params;
-    }
 
-    public void addParam(String key, String value){
-        params.add(new BasicNameValuePair(key,value));
+    /**
+     * Send the request to the server and get the response
+     */
+    public void post(){
+        try {
+            String postJsonData = params.toString();
+            //Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress("127.0.0.1", 8080));
+            HttpURLConnection con = (HttpURLConnection) new URL(url).openConnection();
+            con.setRequestMethod("POST");
+            con.setRequestProperty("Content-Type", "application/json");
+
+            con.setDoOutput(true);
+            DataOutputStream wr = new DataOutputStream(con.getOutputStream());
+            wr.writeBytes(postJsonData);
+            wr.flush();
+            wr.close();
+            BufferedReader in = new BufferedReader(
+                    new InputStreamReader(con.getInputStream()));
+            String output;
+            StringBuffer response = new StringBuffer();
+
+            while ((output = in.readLine()) != null) {
+                response.append(output);
+            }
+            in.close();
+            con.disconnect();
+            System.out.println(response.toString());
+            //printing result from response
+            this.response = new JSONObject(response.toString());
+        }
+        catch(Exception e){
+            System.out.println(e);
+        }
     }
-    public JSONObject getResponse() {
+    public JSONObject getResponse(){
         return response;
     }
 }

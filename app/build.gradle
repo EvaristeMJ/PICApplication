@@ -54,4 +54,6 @@ dependencies {
     configurations.implementation {
         exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib-jdk8'
     }
+    implementation 'net.sourceforge.htmlunit:htmlunit:2.15'
+    implementation 'net.sourceforge.htmlunit:htmlunit-core-js:2.15'
 }

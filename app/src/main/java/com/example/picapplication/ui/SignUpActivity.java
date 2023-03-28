@@ -2,10 +2,13 @@ package com.example.picapplication.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
+import com.example.picapplication.MainActivity;
+import com.example.picapplication.database.DatabaseHelper;
 import com.example.picapplication.databinding.ActivitySignUpBinding;
 import com.example.picapplication.database.PicDatabase;
 import com.example.picapplication.utilities.PreferenceManager;
@@ -13,7 +16,7 @@ import com.example.picapplication.utilities.PreferenceManager;
 public class SignUpActivity extends AppCompatActivity {
     private ActivitySignUpBinding binding;
     private PreferenceManager preferenceManager;
-    private PicDatabase picDatabase;
+    private PicDatabase picDatabase = new DatabaseHelper();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,8 +47,10 @@ public class SignUpActivity extends AppCompatActivity {
     private void signUp(){
         picDatabase.addUser(binding.inputName.getText().toString(),
                 binding.inputPassword.getText().toString());
+        picDatabase.logUser(binding.inputName.getText().toString(),
+                binding.inputPassword.getText().toString());
+        startActivity(new Intent(getApplicationContext(), MainActivity.class));
     }
-
     /**
      * Check if the sign up details are valid
      * Check if the username is valid
@@ -88,15 +93,6 @@ public class SignUpActivity extends AppCompatActivity {
             showToast("Password & confirm password must be same");
             return false;
         }
-        /*
-        else if(binding.inputEmail.getText().toString().isEmpty()){
-            showToast("Enter email");
-            return false;
-        }
-        else if(!Patterns.EMAIL_ADDRESS.matcher(binding.inputEmail.getText().toString()).matches()){
-            showToast("Enter valid email");
-        }
-        */
         else if(binding.inputPassword.getText().toString().isEmpty()){
             showToast("Enter password");
             return false;

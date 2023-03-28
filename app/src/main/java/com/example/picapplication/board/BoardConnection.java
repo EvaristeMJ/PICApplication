@@ -34,6 +34,7 @@ public class BoardConnection implements PicBoardConnection {
         setDevice();
         if (adapter.isEnabled() && device != null) {
             client = new BluetoothClient(device);
+            connected = true;
             return client.connection();
         }
         return CONNECTION_FAILED;
