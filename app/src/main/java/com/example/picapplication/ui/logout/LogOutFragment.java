@@ -7,12 +7,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.example.picapplication.databinding.FragmentLogOutBinding;
-import com.example.picapplication.sql.PicDatabase;
+import com.example.picapplication.database.PicDatabase;
 import com.example.picapplication.ui.SignInActivity;
 
 public class LogOutFragment extends Fragment {

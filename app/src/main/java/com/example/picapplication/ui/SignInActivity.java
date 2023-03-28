@@ -12,14 +12,13 @@ import com.example.picapplication.MainActivity;
 import com.example.picapplication.database.DatabaseHelper;
 import com.example.picapplication.database.User;
 import com.example.picapplication.databinding.ActivitySignInBinding;
-import com.example.picapplication.sql.PicDatabase;
+import com.example.picapplication.database.PicDatabase;
 import com.example.picapplication.utilities.PreferenceManager;
 
 public class SignInActivity extends AppCompatActivity {
     private ActivitySignInBinding binding;
-    private PicDatabase picDatabase;
+    private PicDatabase picDatabase = new DatabaseHelper();
     private com.example.picapplication.utilities.PreferenceManager preferenceManager;
-    public User userLogged;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,13 +31,18 @@ public class SignInActivity extends AppCompatActivity {
         binding.textCreateNewAccount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                DatabaseHelper databaseHelper =  (DatabaseHelper) picDatabase;
+                databaseHelper.defaultLogin();
                 startActivity(new Intent(getApplicationContext(), MainActivity.class));
             }
         });
         binding.buttonSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                signIn();
+                //signIn(); TODO uncomment this line
+                DatabaseHelper databaseHelper =  (DatabaseHelper) picDatabase;
+                databaseHelper.setDefaultUser(binding.inputUsername.getText().toString());
+                startActivity(new Intent(getApplicationContext(), MainActivity.class));
             }
         });
     }

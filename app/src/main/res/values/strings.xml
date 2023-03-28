@@ -29,4 +29,6 @@
     <string name="sign_up">sign up</string>
     <string name="confirm_password">confirm password</string>
     <string name="connect_board">Connect to board</string>
+    <string name="username">username</string>
+    <string name="playerinfo">PlayerInfo</string>
 </resources>

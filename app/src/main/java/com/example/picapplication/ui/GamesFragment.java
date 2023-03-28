@@ -8,12 +8,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.picapplication.R;
 import com.example.picapplication.adapter.GameAdapter;
 import com.example.picapplication.database.Game;
-import com.example.picapplication.databinding.FragmentAccountBinding;
 import com.example.picapplication.databinding.FragmentGamesBinding;
-import com.example.picapplication.sql.PicDatabase;
+import com.example.picapplication.database.PicDatabase;
 
 import java.util.List;
 public class GamesFragment extends Fragment {

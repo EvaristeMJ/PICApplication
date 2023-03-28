@@ -15,6 +15,9 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.example.picapplication.R;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.StringReader;
 import java.sql.Array;
 import java.util.ArrayList;
 import java.util.Base64;
@@ -113,6 +116,33 @@ public class Game {
         return image;
     }
 
+    /**
+     * This method is used to get the game information from the game file
+     * Read the file line by line and add the information to the GameInfo object
+     * @see GameInfo
+     * @return GameInfo object with all the information about the game
+     */
+    public GameInfo getGameInfo(){
+        GameInfo gameInfo = new GameInfo();
+        BufferedReader reader = new BufferedReader(new StringReader(gameFile));
+        int indexInformation = 0;
+        try {
+            String line = reader.readLine();
+            while(!line.contains("EndGameSettings") && line != null){
+                if(line.contains("AddPlayerVariable")){
+                    line = reader.readLine();
+                    gameInfo.setNameInformation(indexInformation,line);
+                    line = reader.readLine();
+                    gameInfo.setInformation(indexInformation,line);
+                    indexInformation++;
+                }
+                line = reader.readLine();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return gameInfo;
+    }
     public void setImage(Bitmap image) {
         this.image = image;
     }

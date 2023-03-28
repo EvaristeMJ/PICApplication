@@ -2,6 +2,8 @@ package com.example.picapplication.board;
 
 import com.example.picapplication.database.Game;
 
+import java.util.List;
+
 /**
  * A pic board interface
  * Mainly used for handling the communication between the application and the board
@@ -40,4 +42,9 @@ public interface PicBoardConnection {
      * @param receiver
      */
     public void addReceiver(BoardMessageReceiver receiver);
+    /**
+     * Remove a receiver from the list of receivers
+     * @param receiver
+     */
+    public void removeReceiver(BoardMessageReceiver receiver);
 }

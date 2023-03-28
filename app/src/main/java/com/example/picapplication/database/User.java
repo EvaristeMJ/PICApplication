@@ -57,7 +57,16 @@ public class User {
     public void setProfilePicture(Bitmap profilePicture) {
         this.profilePicture = profilePicture;
     }
+    public Bitmap getProfilePicture(){
+        return profilePicture;
+    }
     public void playGame(int gameId){
         gamesPlayed.add(gameId);
+    }
+    public void setUsername(String newUsername){
+        username = newUsername;
+    }
+    public void setPassword(String newPassword){
+        password = newPassword;
     }
 }

@@ -12,7 +12,7 @@ import com.example.picapplication.board.PicBoardConnection;
 import com.example.picapplication.database.Game;
 import com.example.picapplication.database.GameInfo;
 import com.example.picapplication.databinding.ActivityGameScreenBinding;
-import com.example.picapplication.sql.PicDatabase;
+import com.example.picapplication.database.PicDatabase;
 
 import java.util.Locale;
 
@@ -23,14 +23,16 @@ public class GameScreenActivity extends AppCompatActivity implements BoardMessag
     private String[] informationName;
     private String[] information;
     private String cardInfo;
+    private PicBoardConnection boardConnection;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        boardConnection.addReceiver(this);
         setContentView(R.layout.activity_game_screen);
         binding = ActivityGameScreenBinding.inflate(getLayoutInflater());
         Game game = database.getGameSelected();
-        GameInfo gameInfo = database.getGameInfo(game.getId());
+        GameInfo gameInfo = game.getGameInfo();
         informationName = gameInfo.getNameInformation();
         information = gameInfo.getInformation();
         binding.backgroundView.setImageBitmap(game.getImage());

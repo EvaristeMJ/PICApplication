@@ -1,4 +1,4 @@
-package com.example.picapplication.sql;
+package com.example.picapplication.database;
 
 import android.graphics.Matrix;
 
@@ -87,13 +87,6 @@ public interface PicDatabase {
     void addGame(String gameName, String gamePitch, String gameTime, String gameRules, String gameDescription, String gameFile, String gameImage, User author);
 
     /**
-     * Gets the games from a SQL query in the database
-     * @param sqlStatement
-     * @return List<Game> the list of games from the query
-     */
-    public List<Game> getGamesFromQuery(String sqlStatement);
-
-    /**
      * Gets the last games created in the database
      * @return List<Game> the list of games
      */
@@ -143,6 +136,7 @@ public interface PicDatabase {
      */
     public void startPlayingGame(User user, Game game);
 
+    public void setGameSelected(Game gameSelected);
     /**
      * Gets the game info of a game
      * @param gameId the id of the game

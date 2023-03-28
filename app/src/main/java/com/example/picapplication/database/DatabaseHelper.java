@@ -1,149 +1,105 @@
 package com.example.picapplication.database;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
 
-import com.example.picapplication.sql.PicDatabase;
 import com.example.picapplication.utilities.BitmapMethod;
-import com.example.picapplication.utilities.Constants;
-import com.example.picapplication.sql.ConnectionHelper;
-import com.example.picapplication.database.User;
 
-import java.sql.Array;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.Base64;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.List;
 
 public class DatabaseHelper implements PicDatabase {
 
-    private User userLogged;
-    private Game gameSelected;
-    private Bitmap defaultProfilePicture; //TODO: set default profile picture
+    private static User userLogged;
+    private static Game gameSelected;
+    private static Bitmap defaultProfilePicture; //TODO: set default profile picture
     public static int USER_NOT_FOUND = -1;
     public static int WRONG_PASSWORD = -2;
+    private String url = "http://137.194.210.224/";
+    private static String serverSideUser = "user.php";
+    private static String serverSideGame = "game.php";
+    private static String serverSideUserInteraction = "user_play_games.php";
 
+    public void defaultLogin(){
+        userLogged = new User("anon","pic",0,defaultProfilePicture);
+
+    }
     @Override
     public void addUser(String username, String password) {
-        String sqlStatement = "INSERT INTO " + Constants.KEY_COLLECTION_USERS+
-                "("+Constants.KEY_NAME+","+Constants.KEY_PASSWORD+","+ Constants.KEY_PROFILE_PICTURE +","+Constants.KEY_GAMES_PLAYED+") " + "VALUES(?,?,?,?)";
-        int id = 0;
-        String encodedImage = BitmapMethod.encodeBitmap(defaultProfilePicture);
+        HttpConnection httpConnection = new HttpConnection(url + serverSideUser);
+        httpConnection.addParam("username", username);
+        httpConnection.addParam("password", password);
+        httpConnection.addParam("action", "add");
+        httpConnection.addParam("profilePicture", BitmapMethod.encodeBitmap(defaultProfilePicture));
+        httpConnection.send();
+        JSONObject response = httpConnection.getResponse();
         try {
-            Connection conn = ConnectionHelper.connection();
-            PreparedStatement pstmt = conn.prepareStatement(sqlStatement,
-                    Statement.RETURN_GENERATED_KEYS);
-            pstmt.setString(1,username);
-            pstmt.setString(2,password);
-            pstmt.setString(3,encodedImage);
-            pstmt.setString(4,"");
-
-            int affectedRows = pstmt.executeUpdate();
-            if(affectedRows > 0){
-                ResultSet rs = pstmt.getGeneratedKeys();
-                if(rs.next()){
-                    id = rs.getInt(1);
-                }
+            if(response.getString("status").equals("success")){
+                userLogged = new User(username, password, response.getInt("id"), defaultProfilePicture);
             }
-        } catch (SQLException e) {
+            if(response.getString("status").equals("error")){
+                //TODO inform user that username already exists
+            }
+        } catch (JSONException e) {
             e.printStackTrace();
         }
+
     }
 
-    /**
-     * Logs a user in the database
-     * checks if the username and password are correct
-     * if they are, it returns the id of the user logged
-     * userLogged is set to the user logged
-     * if the username is not found, it returns USER_NOT_FOUND
-     * if the password is wrong, it returns WRONG_PASSWORD
-     * @param username the username of the user
-     * @param password the password of the user
-     * @return
-     */
     @Override
     public int logUser(String username, String password) {
+        HttpConnection httpConnection = new HttpConnection(url + serverSideUser);
+        httpConnection.addParam("username", username);
+        httpConnection.addParam("password", password);
+        httpConnection.addParam("action", "login");
+        httpConnection.send();
+        JSONObject response = httpConnection.getResponse();
         try {
-            Connection conn = ConnectionHelper.connection();
-            String sqlStatement = "SELECT * FROM " + Constants.KEY_COLLECTION_USERS + " WHERE " + Constants.KEY_NAME + " = ?";
-            PreparedStatement pstmt = conn.prepareStatement(sqlStatement);
-            pstmt.setString(1,username);
-            ResultSet rs = pstmt.executeQuery();
-            if(rs.next()){
-                if(rs.getString(Constants.KEY_PASSWORD).equals(password)){
-                    int id = rs.getInt(Constants.KEY_USER_ID);
-                    userLogged = new User(rs.getString(Constants.KEY_NAME),rs.getString(Constants.KEY_PASSWORD),id,
-                            BitmapMethod.decodeBitmap(rs.getString(Constants.KEY_PROFILE_PICTURE)));
-                    userLogged.setGamesPlayed(rs.getString(Constants.KEY_GAMES_PLAYED));
-                    return id;
-                }
-                else{
-                    return WRONG_PASSWORD;
-                }
+            if(response.getString("status").equals("success")){
+                userLogged = new User(username, password, response.getInt("id"), BitmapMethod.decodeBitmap(response.getString("profile_picture")));
+                return 0;
+            }else{
+                return response.getInt("error");
             }
-            conn.close();
-        } catch (SQLException e) {
+        } catch (JSONException e) {
             e.printStackTrace();
         }
-        return USER_NOT_FOUND;
+        return -1;
     }
 
     @Override
     public void updateGame(int gameId, String gameName, String gamePitch, String gameTime, String gameRules, String GameFile, User editor) {
-        try {
-            Connection conn = ConnectionHelper.connection();
-            String sqlStatement = "UPDATE " + Constants.KEY_COLLECTION_GAMES + " SET " + Constants.KEY_GAME_NAME + " = ?," +
-                    Constants.KEY_GAME_PITCH + " = ?," + Constants.KEY_GAME_DESCRIPTION + " = ?," + Constants.KEY_GAME_TIME + " = ?," +
-                    Constants.KEY_GAME_RULES + " = ?," + Constants.KEY_GAME_FILE + " = ? WHERE " + Constants.KEY_GAME_ID + " = ?";
-            PreparedStatement pstmt = conn.prepareStatement(sqlStatement);
-            pstmt.setString(1,gameName);
-            pstmt.setString(2,gamePitch);
-            pstmt.setString(3,gameTime);
-            pstmt.setString(4,gameRules);
-            pstmt.setString(5,GameFile);
-            pstmt.setInt(6,gameId);
-            pstmt.executeUpdate();
-            conn.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
 
     }
 
     @Override
-    public void changeUsername(String newUsername){
-        try {
-            Connection conn = ConnectionHelper.connection();
-            String sqlStatement = "UPDATE " + Constants.KEY_COLLECTION_USERS + " SET " + Constants.KEY_NAME + " = ? WHERE " + Constants.KEY_USER_ID + " = ?";
-            PreparedStatement pstmt = conn.prepareStatement(sqlStatement);
-            pstmt.setString(1,newUsername);
-            pstmt.setInt(2,userLogged.getId());
-            pstmt.executeUpdate();
-            conn.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+    public void changeProfilePicture(String profilePicture) {
+        HttpConnection httpConnection = new HttpConnection(url + serverSideUser);
+        httpConnection.addParam("username", userLogged.getUsername());
+        httpConnection.addParam("password", userLogged.getPassword());
+        httpConnection.addParam("action", "change_profile_picture");
+        httpConnection.addParam("profilePicture", profilePicture);
+        httpConnection.addParam("userId", String.valueOf(userLogged.getId()));
+        httpConnection.send();
+        userLogged.setProfilePicture(BitmapMethod.decodeBitmap(profilePicture));
+
+    }
+
+    @Override
+    public void changeUsername(String newUsername) {
+        HttpConnection httpConnection = new HttpConnection(url + serverSideUser);
+        httpConnection.addParam("username", userLogged.getUsername());
+        httpConnection.addParam("password", userLogged.getPassword());
+        httpConnection.addParam("action", "change_username");
+        httpConnection.addParam("newUsername", newUsername);
+        httpConnection.addParam("userId", String.valueOf(userLogged.getId()));
+        httpConnection.send();
+        userLogged.setUsername(newUsername);
     }
 
     @Override
     public boolean checkUsername(String username) {
-        try {
-            Connection conn = ConnectionHelper.connection();
-            String sqlStatement = "SELECT * FROM " + Constants.KEY_COLLECTION_USERS + " WHERE " + Constants.KEY_NAME + " = ?";
-            PreparedStatement pstmt = conn.prepareStatement(sqlStatement);
-            pstmt.setString(1,username);
-            ResultSet rs = pstmt.executeQuery();
-            if(rs.next()){
-                return true;
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
         return false;
     }
 
@@ -151,265 +107,98 @@ public class DatabaseHelper implements PicDatabase {
     public User getUserLogged() {
         return userLogged;
     }
-    @Override
-    public void changeProfilePicture(String encodedPicture){
-        try {
-            Connection conn = ConnectionHelper.connection();
-            String sqlStatement = "UPDATE " + Constants.KEY_COLLECTION_USERS + " SET " + Constants.KEY_PROFILE_PICTURE + " = ? WHERE " + Constants.KEY_USER_ID + " = ?";
-            PreparedStatement pstmt = conn.prepareStatement(sqlStatement);
-            pstmt.setString(1,encodedPicture);
-            pstmt.setInt(2,userLogged.getId());
-            pstmt.executeUpdate();
-            conn.close();
-            userLogged.setProfilePicture(BitmapMethod.decodeBitmap(encodedPicture));
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
 
     @Override
     public void changePassword(String newPassword) {
-        try {
-            Connection conn = ConnectionHelper.connection();
-            String sqlStatement = "UPDATE " + Constants.KEY_COLLECTION_USERS + " SET " + Constants.KEY_PASSWORD + " = ? WHERE " + Constants.KEY_USER_ID + " = ?";
-            PreparedStatement pstmt = conn.prepareStatement(sqlStatement);
-            pstmt.setString(1,newPassword);
-            pstmt.setInt(2,userLogged.getId());
-            pstmt.executeUpdate();
-            conn.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
+        HttpConnection httpConnection = new HttpConnection(url + serverSideUser);
+        httpConnection.addParam("username", userLogged.getUsername());
+        httpConnection.addParam("password", userLogged.getPassword());
+        httpConnection.addParam("action", "change_password");
+        httpConnection.addParam("id", String.valueOf(userLogged.getId()));
+        httpConnection.addParam("profile_picture", BitmapMethod.encodeBitmap(userLogged.getProfilePicture()));
+        userLogged.setPassword(newPassword);
     }
 
     @Override
     public void deleteUser(User user) {
-        try {
-            Connection conn = ConnectionHelper.connection();
-            String sqlStatement = "DELETE FROM " + Constants.KEY_COLLECTION_USERS + " WHERE " + Constants.KEY_USER_ID + " = ?";
-            PreparedStatement pstmt = conn.prepareStatement(sqlStatement);
-            pstmt.setInt(1,user.getId());
-            pstmt.executeUpdate();
-            conn.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
+        HttpConnection httpConnection = new HttpConnection(url + serverSideUser);
+        httpConnection.addParam("username", userLogged.getUsername());
+        httpConnection.addParam("password", userLogged.getPassword());
+        httpConnection.addParam("action", "delete");
+        httpConnection.addParam("profile_picture", BitmapMethod.encodeBitmap(userLogged.getProfilePicture()));
+        httpConnection.addParam("id", String.valueOf(userLogged.getId()));
+        httpConnection.send();
+        userLogged = null;
     }
 
     @Override
     public void addGame(String gameName, String gamePitch, String gameTime, String gameRules, String gameDescription, String gameFile, String gameImage, User author) {
-        String sqlStatement = "INSERT INTO " + Constants.KEY_COLLECTION_GAMES +
-                "(" + Constants.KEY_GAME_NAME+ "," +Constants.KEY_GAME_PITCH+ "," +Constants.KEY_GAME_DESCRIPTION +","+
-                Constants.KEY_GAME_TIME+"," + Constants.KEY_GAME_RULES + "," + Constants.KEY_GAME_FILE +","+Constants.KEY_GAME_IMAGE+","+Constants.KEY_GAME_POPULARITY +","
-                +Constants.KEY_GAME_AUTHOR + ") "
-                + "VALUES(?,?,?,?,?,?,?,?,?)";
-        int id = 0;
-        try {
-            Connection conn = ConnectionHelper.connection();
-            PreparedStatement pstmt = conn.prepareStatement(sqlStatement,
-                    Statement.RETURN_GENERATED_KEYS);
-            pstmt.setString(1,gameName);
-            pstmt.setString(2,gamePitch);
-            pstmt.setString(3,gameDescription);
-            pstmt.setString(4,gameTime);
-            pstmt.setString(5,gameRules);
-            pstmt.setString(6,gameFile);
-            pstmt.setString(7, gameImage);
-            pstmt.setInt(8,0);
-            pstmt.setString(9,author.getUsername());
 
-            int affectedRows = pstmt.executeUpdate();
-            if(affectedRows > 0){
-                ResultSet rs = pstmt.getGeneratedKeys();
-                if(rs.next()){
-                    id = rs.getInt(1);
-                }
-            }
-            conn.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        addGameInfo(id);
-    }
-
-    @Override
-    public List<Game> getGamesFromQuery(String sqlStatement) {
-        ArrayList <Game> games = new ArrayList<>();
-        try{
-            Connection conn = ConnectionHelper.connection();
-            PreparedStatement pstmt = conn.prepareStatement(sqlStatement);
-            ResultSet rs = pstmt.executeQuery();
-            while(rs.next()){
-                Game game = new Game(rs.getInt(Constants.KEY_GAME_ID),
-                        rs.getString(Constants.KEY_GAME_NAME),
-                        rs.getString(Constants.KEY_GAME_PITCH),
-                        rs.getString(Constants.KEY_GAME_DESCRIPTION),
-                        BitmapFactory.decodeFile(rs.getString(Constants.KEY_GAME_IMAGE)),
-                        rs.getString(Constants.KEY_GAME_TIME),
-                        rs.getString(Constants.KEY_GAME_RULES),
-                        rs.getString(Constants.KEY_GAME_FILE),
-                        rs.getInt(Constants.KEY_GAME_POPULARITY),
-                        rs.getString(Constants.KEY_GAME_AUTHOR)
-                );
-                games.add(game);
-            }
-        }
-        catch (SQLException e){
-            e.printStackTrace();
-        }
-        return games;
     }
 
     @Override
     public List<Game> getLastGamesCreated() {
-        int numberOfGames = 100;
-        String sqlStatement = "SELECT * FROM " + Constants.KEY_COLLECTION_GAMES + " ORDER BY " + Constants.KEY_GAME_ID + " DESC LIMIT " + numberOfGames;
-        return getGamesFromQuery(sqlStatement);
+        return null;
     }
 
     @Override
     public Game getGameFromId(int gameId) {
-        String sqlStatement = "SELECT * FROM " + Constants.KEY_COLLECTION_GAMES + " WHERE " + Constants.KEY_GAME_ID + " = " + gameId;
-        List<Game> games = getGamesFromQuery(sqlStatement);
-        if(games.size() > 0){
-            return games.get(0);
-        }
         return null;
     }
 
     @Override
     public List<Game> getPopularGames() {
-        int numberOfGames = 100;
-        String sqlStatement = "SELECT * FROM " + Constants.KEY_COLLECTION_GAMES + " ORDER BY " + Constants.KEY_GAME_POPULARITY + " DESC" + " LIMIT " + numberOfGames;
-        return getGamesFromQuery(sqlStatement);
+        return null;
     }
 
     @Override
     public List<Game> getGamesPlayed(User user) {
-        String sqlStatement = "SELECT * FROM " + Constants.KEY_COLLECTION_GAMES + " WHERE " + Constants.KEY_GAME_ID + " IN " + user.getGamesPlayed();
-        return getGamesFromQuery(sqlStatement);
+        return null;
     }
 
     @Override
     public List<Game> getGamesCreated(User user) {
-        String sqlStatement = "SELECT * FROM " + Constants.KEY_COLLECTION_GAMES + " WHERE " + Constants.KEY_GAME_AUTHOR + " = " + user.getUsername();
-        return getGamesFromQuery(sqlStatement);
+        return null;
     }
 
     @Override
     public void deleteGame(Game game) {
-        try {
-            Connection conn = ConnectionHelper.connection();
-            String sqlStatement = "DELETE FROM " + Constants.KEY_COLLECTION_GAMES + " WHERE " + Constants.KEY_GAME_ID + " = " + game.getId();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+
     }
 
-    /**
-     * Increase the popularity of a game (+1)
-     * Add the game to the list of games played by the user
-     * @param user the user that plays the game
-     * @param game the game to play
-     */
+    @Override
+    public Game getGameSelected() {
+        return null;
+    }
+
     @Override
     public void startPlayingGame(User user, Game game) {
-        try {
-            Connection conn = ConnectionHelper.connection();
-            String sqlStatement = "UPDATE " + Constants.KEY_COLLECTION_GAMES + " SET " + Constants.KEY_GAME_POPULARITY + " = " + Constants.KEY_GAME_POPULARITY + " + 1 WHERE " + Constants.KEY_GAME_ID + " = " + game.getId();
-            PreparedStatement pstmt = conn.prepareStatement(sqlStatement);
-            pstmt.executeUpdate();
-            String sqlStatement2 = "UPDATE " + Constants.KEY_COLLECTION_USERS + " SET " + Constants.KEY_GAMES_PLAYED + " = "
-                    + Constants.KEY_GAMES_PLAYED + " + " + ","+game.getId() + " WHERE " + Constants.KEY_NAME + " = " + user.getUsername();
-            PreparedStatement pstmt2 = conn.prepareStatement(sqlStatement2);
-            pstmt2.executeUpdate();
-            gameSelected = game;
-            conn.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+
     }
 
     @Override
     public GameInfo getGameInfo(int gameId) {
-        GameInfo gameInfo = null;
-        try {
-            Connection conn = ConnectionHelper.connection();
-            String sqlStatement = "SELECT * FROM " + Constants.KEY_COLLECTION_GAME_INFO + " WHERE " + Constants.KEY_GAME_ID + " = " + gameId;
-            PreparedStatement pstmt = conn.prepareStatement(sqlStatement);
-            ResultSet rs = pstmt.executeQuery();
-            if(rs.next()){
-                /*
-                gameInfo = new GameInfo(rs.getString(Constants.KEY_GAME_FIRST_INFO_NAME),
-                        rs.getString(Constants.KEY_GAME_SECOND_INFO_NAME),
-                        rs.getString(Constants.KEY_GAME_THIRD_INFO_NAME),
-                        rs.getString(Constants.KEY_GAME_FOURTH_INFO_NAME),
-                        rs.getString(Constants.KEY_GAME_FIFTH_INFO_NAME),
-                        BitmapFactory.decodeFile(rs.getString(Constants.KEY_GAME_BACKGROUND)));
-
-                 */
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return gameInfo;
+        return null;
     }
 
     @Override
     public void addGameInfo(int gameId) {
-        try {
-            Connection conn = ConnectionHelper.connection();
-            String sqlStatement = "INSERT INTO " + Constants.KEY_COLLECTION_GAME_INFO + " (" + Constants.KEY_GAME_ID + ", " + Constants.KEY_GAME_FIRST_INFO_NAME + ", " + Constants.KEY_GAME_SECOND_INFO_NAME + ", " + Constants.KEY_GAME_THIRD_INFO_NAME + ", " + Constants.KEY_GAME_FOURTH_INFO_NAME + ", " + Constants.KEY_GAME_FIFTH_INFO_NAME + ", " + Constants.KEY_GAME_BACKGROUND + ") VALUES (?,?,?,?,?,?,?)";
-            PreparedStatement pstmt = conn.prepareStatement(sqlStatement);
-            pstmt.setInt(1, gameId);
-            pstmt.setString(2, "First info");
-            pstmt.setString(3, "Second info");
-            pstmt.setString(4, "Third info");
-            pstmt.setString(5, "Fourth info");
-            pstmt.setString(6, "Fifth info");
-            pstmt.setString(7, "");
-            pstmt.executeUpdate();
-            conn.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+
     }
 
     @Override
-    public void updateGameInfo(int gameId,String firstInfoName, String secondInfoName, String thirdInfoName, String fourthInfoName, String fifthInfoName) {
-        try {
-            Connection conn = ConnectionHelper.connection();
-            String sqlStatement = "UPDATE " + Constants.KEY_COLLECTION_GAME_INFO + " SET " + Constants.KEY_GAME_FIRST_INFO_NAME + " = ?, " + Constants.KEY_GAME_SECOND_INFO_NAME + " = ?, " + Constants.KEY_GAME_THIRD_INFO_NAME + " = ?, " + Constants.KEY_GAME_FOURTH_INFO_NAME + " = ?, " + Constants.KEY_GAME_FIFTH_INFO_NAME + " = ? WHERE " + Constants.KEY_GAME_ID + " = ?";
-            PreparedStatement pstmt = conn.prepareStatement(sqlStatement);
-            pstmt.setString(1, firstInfoName);
-            pstmt.setString(2, secondInfoName);
-            pstmt.setString(3, thirdInfoName);
-            pstmt.setString(4, fourthInfoName);
-            pstmt.setString(5, fifthInfoName);
-            pstmt.executeUpdate();
-            conn.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+    public void updateGameInfo(int gameID, String firstInfoName, String secondInfoName, String thirdInfoName, String fourthInfoName, String fifthInfoName) {
+
     }
 
     @Override
     public void deleteGameInfo(int gameId) {
-        try {
-            Connection conn = ConnectionHelper.connection();
-            String sqlStatement = "DELETE FROM " + Constants.KEY_COLLECTION_GAME_INFO + " WHERE " + Constants.KEY_GAME_ID + " = " + gameId;
-            PreparedStatement pstmt = conn.prepareStatement(sqlStatement);
-            pstmt.executeUpdate();
-            conn.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
 
-    public Game getGameSelected() {
-        return gameSelected;
     }
-
+    public void setGameSelected(Game gameSelected) {
+        this.gameSelected = gameSelected;
+    }
+    public void setDefaultUser(String username) {
+        userLogged = new User(username, "pic", 0, defaultProfilePicture);
+    }
 }

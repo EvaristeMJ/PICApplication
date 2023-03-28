@@ -10,6 +10,11 @@ public class GameInfo {
     private String[] nameInformation;
     private String[] information;
     private Bitmap backgroundImage;
+    public GameInfo(){
+        backgroundImage = null;
+        information = new String[5];
+        nameInformation = new String[5];
+    }
     public GameInfo(String nameFirstInformation, String nameSecondInformation,
                     String nameThirdInformation, String nameFourthInformation,
                     String nameFifthInformation,String firstInformation, String secondInformation,
@@ -28,6 +33,12 @@ public class GameInfo {
         this.information[3] = fourthInformation;
         this.information[4] = fifthInformation;
         this.backgroundImage = backgroundImage;
+    }
+    public void setNameInformation(int i, String nameInformation) {
+        this.nameInformation[i] = nameInformation;
+    }
+    public void setInformation(int i, String information) {
+        this.information[i] = information;
     }
     public String[] getNameInformation() {
         return nameInformation;
