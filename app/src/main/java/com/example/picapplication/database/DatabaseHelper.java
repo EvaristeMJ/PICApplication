@@ -67,6 +67,23 @@ public class DatabaseHelper implements PicDatabase {
         }
         return -1;
     }
+    @Override
+    public String getUsernameFromId(int id){
+        HttpConnection httpConnection = new HttpConnection(url + serverSideUser);
+        httpConnection.addParam("action", "get_username");
+        httpConnection.addParam("id", id+"");
+        httpConnection.post();
+        JSONObject response = httpConnection.getResponse();
+        String username = "";
+        try {
+            if(response.getString("status").equals("success")){
+                username = response.getString("username");
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return username;
+    }
 
     @Override
     public void updateGame(int gameId, String gameName, String gamePitch, String gameTime, String gameRules, String GameFile, User editor) {
@@ -180,12 +197,42 @@ public class DatabaseHelper implements PicDatabase {
 
     @Override
     public Game getGameFromId(int gameId) {
-        return null;
+        HttpConnection httpConnection = new HttpConnection(url + serverSideGame);
+        httpConnection.addParam("action", "get_game");
+        httpConnection.addParam("id", String.valueOf(gameId));
+        httpConnection.post();
+        JSONObject response = httpConnection.getResponse();
+        Game game = null;
+        try {
+            game = new Game(response.getInt("id"), response.getString("name"),
+                    response.getString("game_pitch"), response.getString("game_description"),
+                    BitmapMethod.decodeBitmap(response.getString("game_image")), response.getString("game_time"),
+                    response.getString("game_rules"),response.getString("game_file"),response.getInt("popularity"),response.getString("author"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return game;
     }
 
     @Override
     public List<Game> getPopularGames() {
-        return null;
+        HttpConnection httpConnection = new HttpConnection(url + serverSideGame);
+        httpConnection.addParam("action", "get_popular");
+        httpConnection.post();
+        JSONObject response = httpConnection.getResponse();
+        List<Game> games = new ArrayList<>();
+        for(int i = 0; i < response.length(); i++){
+            try {
+                JSONObject game = response.getJSONObject(String.valueOf(i));
+                games.add(new Game(game.getInt("id"), game.getString("name"),
+                        game.getString("game_pitch"), game.getString("game_description"),
+                        BitmapMethod.decodeBitmap(game.getString("game_image")), game.getString("game_time"),
+                        game.getString("game_rules"),game.getString("game_file"),game.getInt("popularity"),game.getString("author")));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return games;
     }
 
     @Override
@@ -195,41 +242,41 @@ public class DatabaseHelper implements PicDatabase {
 
     @Override
     public List<Game> getGamesCreated(User user) {
-        return null;
+        HttpConnection httpConnection = new HttpConnection(url + serverSideGame);
+        httpConnection.addParam("action", "get_created");
+        httpConnection.addParam("author", ""+user.getId());
+        httpConnection.post();
+        JSONObject response = httpConnection.getResponse();
+        List<Game> games = new ArrayList<>();
+        for(int i = 0; i < response.length(); i++){
+            try {
+                JSONObject game = response.getJSONObject(String.valueOf(i));
+                games.add(new Game(game.getInt("id"), game.getString("name"),
+                        game.getString("game_pitch"), game.getString("game_description"),
+                        BitmapMethod.decodeBitmap(game.getString("game_image")), game.getString("game_time"),
+                        game.getString("game_rules"),game.getString("game_file"),game.getInt("popularity"),game.getString("author")));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return games;
     }
 
     @Override
     public void deleteGame(Game game) {
-
+        HttpConnection httpConnection = new HttpConnection(url + serverSideGame);
+        httpConnection.addParam("action", "delete");
+        httpConnection.addParam("id", String.valueOf(game.getId()));
+        httpConnection.post();
     }
 
     @Override
     public Game getGameSelected() {
-        return null;
+        return gameSelected;
     }
 
     @Override
     public void startPlayingGame(User user, Game game) {
-
-    }
-
-    @Override
-    public GameInfo getGameInfo(int gameId) {
-        return null;
-    }
-
-    @Override
-    public void addGameInfo(int gameId) {
-
-    }
-
-    @Override
-    public void updateGameInfo(int gameID, String firstInfoName, String secondInfoName, String thirdInfoName, String fourthInfoName, String fifthInfoName) {
-
-    }
-
-    @Override
-    public void deleteGameInfo(int gameId) {
 
     }
     public void setGameSelected(Game gameSelected) {

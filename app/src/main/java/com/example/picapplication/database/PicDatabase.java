@@ -18,6 +18,13 @@ public interface PicDatabase {
     public void addUser(String username,String password);
 
     /**
+     * Get the username from the id
+     * @param id the id of the user
+     * @return the username of the user
+     */
+    public String getUsernameFromId(int id);
+
+    /**
      * Logs a user in the database
      * @param username the username of the user
      * @param password the password of the user
@@ -137,13 +144,5 @@ public interface PicDatabase {
     public void startPlayingGame(User user, Game game);
 
     public void setGameSelected(Game gameSelected);
-    /**
-     * Gets the game info of a game
-     * @param gameId the id of the game
-     */
-    public GameInfo getGameInfo(int gameId);
-    public void addGameInfo(int gameId);
-    public void updateGameInfo(int gameID,String firstInfoName,String secondInfoName,String thirdInfoName,String fourthInfoName,String fifthInfoName);
-    public void deleteGameInfo(int gameId);
 
 }

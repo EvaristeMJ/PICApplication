@@ -79,7 +79,7 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder
             playButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(!picBoardConnection.isConnected()){
+                    if(!picBoardConnection.isConnected()){ // TODO change to isConnected
                         //picDatabase.startPlayingGame(picDatabase.getUserLogged(),games.get(getAdapterPosition()));
                         //picBoardConnection.loadGame(games.get(getAdapterPosition()));
                         // start Game Screen Activity

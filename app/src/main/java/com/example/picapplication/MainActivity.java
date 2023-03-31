@@ -82,11 +82,14 @@ public class MainActivity extends AppCompatActivity implements BoardMessageRecei
      */
     @Override
     public void onReceive(BoardMessage message) {
+        /*
         if(message.getType() == BoardMessage.GAME_START){
             GameMessage gameMessage = (GameMessage) message;
             database.setGameSelected(gameMessage.getGame());
             startActivity(new Intent(this, GameScreenActivity.class));
         }
+
+         */
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

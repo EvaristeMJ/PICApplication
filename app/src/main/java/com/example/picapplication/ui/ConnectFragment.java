@@ -45,7 +45,6 @@ public class ConnectFragment extends Fragment {
         }
         System.out.println("searching"); //TODO: remove this line
         int idBoard = boardConnection.connect();
-        idBoard = 1; //TODO: remove this line
         if(idBoard != 0){
             database.getUserLogged().setIdBoard(idBoard);
             MainActivity mainActivity = (MainActivity) getActivity();

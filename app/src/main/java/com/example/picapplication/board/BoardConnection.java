@@ -20,7 +20,7 @@ public class BoardConnection implements PicBoardConnection {
     private static BluetoothDevice device;
     private static final BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
     private static boolean connected = false;
-    private static final String KEY_NAME_BOARD = "PicBoard";
+    private static final String KEY_NAME_BOARD = "ROG";
     private static String stringMessage;
 
     /**
@@ -72,12 +72,15 @@ public class BoardConnection implements PicBoardConnection {
     public void sendMessage(BoardMessage message) {
         for (BoardMessageReceiver receiver : receivers) {
             receiver.onReceive(message);
+            System.out.println("Message sent to " + receiver.toString()+ " : " + message.getMessage());
         }
     }
 
     @Override
     public void addReceiver(BoardMessageReceiver receiver) {
-        receivers.add(receiver);
+        if(!receivers.contains(receiver)){
+            receivers.add(receiver);
+        }
     }
 
     @Override

@@ -30,45 +30,49 @@
 
         <TextView
             android:id="@+id/secondInfo"
-            android:layout_width="@dimen/_50ssp"
+            android:layout_width="300dp"
             android:layout_height="@dimen/_50ssp"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
             android:layout_marginStart="0dp"
             android:layout_marginTop="0dp"
+            android:layout_marginEnd="0dp"
             android:background="@color/white"
-            android:gravity="center"
             android:text="GameInfo"
             android:textColor="@color/black"
             android:textSize="24sp" />
 
         <TextView
             android:id="@+id/thirdInfo"
-            android:layout_width="@dimen/_50ssp"
+            android:layout_width="300dp"
             android:layout_height="@dimen/_50ssp"
             android:layout_alignParentEnd="true"
+            android:layout_marginStart="0dp"
             android:layout_marginEnd="0dp"
+            android:layout_toEndOf="@+id/secondInfo"
             android:background="@color/white"
-            android:gravity="center"
+            android:gravity="end"
             android:text="GameInfo"
             android:textColor="@color/black"
             android:textSize="24sp" />
+
         <TextView
             android:id="@+id/fourthInfo"
-            android:layout_width="@dimen/_50ssp"
+            android:layout_width="300dp"
             android:layout_height="@dimen/_50ssp"
-            android:layout_alignParentBottom="true"
             android:layout_alignParentStart="true"
+            android:layout_alignParentBottom="true"
             android:layout_marginEnd="0dp"
+            android:layout_toStartOf="@+id/speakButton"
             android:background="@color/white"
-            android:gravity="center"
+            android:gravity="start"
             android:text="GameInfo"
             android:textColor="@color/black"
             android:textSize="24sp">
 
         </TextView>
-        <TextView
-            android:id="@+id/fifthInfo"
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/speakButton"
             android:layout_width="@dimen/_50ssp"
             android:layout_height="@dimen/_50ssp"
             android:layout_alignParentBottom="true"
@@ -76,11 +80,9 @@
             android:layout_marginEnd="0dp"
             android:background="@color/white"
             android:gravity="center"
-            android:text="GameInfo"
-            android:textColor="@color/black"
-            android:textSize="24sp">
+            android:text="Speak"
+            ></com.google.android.material.button.MaterialButton>
 
-        </TextView>
 
     </RelativeLayout>
 

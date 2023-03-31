@@ -41,13 +41,13 @@ public class Game {
         this.id = id;
     }
     public Game(){
-        gameDescription = null;
-        gameFile = null;
-        gameName = null;
-        gamePitch = null;
-        gameRules = null;
-        gameTime = null;
-        author = null;
+        gameDescription = "";
+        gameFile = "";
+        gameName = "";
+        gamePitch = "";
+        gameRules = "";
+        gameTime = "";
+        author = "";
         image = null;
         gamePopularity = 0;
         id = 0;
@@ -55,11 +55,11 @@ public class Game {
     public static List<Game> initGameList(Resources resources) {
         ArrayList games = new ArrayList<Game>();
         Bitmap bitmap = drawableToBitmap(resources.getDrawable(R.drawable.ic_menu_camera));
-        games.add(new Game(1,"Game 1","Game 1 pitch","Game 1 description", bitmap,"Game 1 time","Game 1 rules","Game 1 file",0,"Game 1 author"));
-        games.add(new Game(1,"Game 1","Game 1 pitch","Game 1 description", bitmap,"Game 1 time","Game 1 rules","Game 1 file",0,"Game 1 author"));
-        games.add(new Game(1,"Game 1","Game 1 pitch","Game 1 description", bitmap,"Game 1 time","Game 1 rules","Game 1 file",0,"Game 1 author"));
-        games.add(new Game(1,"Game 1","Game 1 pitch","Game 1 description", bitmap,"Game 1 time","Game 1 rules","Game 1 file",0,"Game 1 author"));
-        games.add(new Game(1,"Game 1","Game 1 pitch","Game 1 description", bitmap,"Game 1 time","Game 1 rules","Game 1 file",0,"Game 1 author"));
+        games.add(new Game(1,"Game 1","Game 1 pitch","Game 1 description", bitmap,"Game 1 time","Game 1 rules","Game 1 file",0,"4"));
+        games.add(new Game(1,"Game 1","Game 1 pitch","Game 1 description", bitmap,"Game 1 time","Game 1 rules","Game 1 file",0,"4"));
+        games.add(new Game(1,"Game 1","Game 1 pitch","Game 1 description", bitmap,"Game 1 time","Game 1 rules","Game 1 file",0,"4"));
+        games.add(new Game(1,"Game 1","Game 1 pitch","Game 1 description", bitmap,"Game 1 time","Game 1 rules","Game 1 file",0,"4"));
+        games.add(new Game(1,"Game 1","Game 1 pitch","Game 1 description", bitmap,"Game 1 time","Game 1 rules","Game 1 file",0,"4"));
         return games;
     }
     // Getters and setters
@@ -123,24 +123,7 @@ public class Game {
      * @return GameInfo object with all the information about the game
      */
     public GameInfo getGameInfo(){
-        GameInfo gameInfo = new GameInfo();
-        BufferedReader reader = new BufferedReader(new StringReader(gameFile));
-        int indexInformation = 0;
-        try {
-            String line = reader.readLine();
-            while(!line.contains("EndGameSettings") && line != null){
-                if(line.contains("AddPlayerVariable")){
-                    line = reader.readLine();
-                    gameInfo.setNameInformation(indexInformation,line);
-                    line = reader.readLine();
-                    gameInfo.setInformation(indexInformation,line);
-                    indexInformation++;
-                }
-                line = reader.readLine();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        GameInfo gameInfo = new GameInfo(gameFile);
         return gameInfo;
     }
     public void setImage(Bitmap image) {
