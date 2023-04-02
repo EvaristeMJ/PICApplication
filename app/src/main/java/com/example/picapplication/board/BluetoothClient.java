@@ -12,7 +12,10 @@ import android.os.AsyncTask;
 
 import androidx.core.app.ActivityCompat;
 
+import com.example.picapplication.database.DatabaseHelper;
 import com.example.picapplication.database.Game;
+import com.example.picapplication.database.PicDatabase;
+import com.example.picapplication.utilities.Constants;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,6 +30,8 @@ public class BluetoothClient extends AsyncTask<Void, Void, Void> {
     private BluetoothSocket socket;
     private BluetoothAdapter adapter;
     private String message;
+    private String userid = "1";
+    private PicDatabase database = new DatabaseHelper();
     private BoardConnection boardConnection = new BoardConnection();
     private static final String MY_UUID = "00001101-0000-1000-8000-00805F9B34FB";
 
@@ -49,11 +54,16 @@ public class BluetoothClient extends AsyncTask<Void, Void, Void> {
     @SuppressLint("MissingPermission")
     public int connection(){
         int result = 0;
-        sendStringToBoard("Hello, I'm a new Player");
-        System.out.println("OK for sending");
-        closeSocket();
+        sendStringToBoard(userid);
+        System.out.println("sent username");
         String message = receiveStringFromBoard();
+        System.out.println("received message");
         result = Integer.parseInt(message);
+        // test sending
+        Game game = new Game();
+        game.setGameFile(Constants.TEST_GAME_FILE);
+        sendGame(game);
+        System.out.println("sent game");
         // get the id from the message
         return result;
     }
@@ -66,42 +76,30 @@ public class BluetoothClient extends AsyncTask<Void, Void, Void> {
     }
     @SuppressLint("MissingPermission")
     public void sendStringToBoard(String message){
-        Method m = null;
         try {
-            m = device.getClass().getMethod("createInsecureRfcommSocket", new Class[] {int.class});
-            socket = (BluetoothSocket) m.invoke(device, 1);
+            BluetoothServerSocket serverSocket = adapter.listenUsingInsecureRfcommWithServiceRecord("PIC", UUID.fromString(MY_UUID));
+            socket = serverSocket.accept();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        while(true) {
-            try {
-                socket.connect();
-                break;
-            } catch (IOException e) {
-                continue;
-            }
-        }
+        System.out.println("socket created");
         OutputStream outputStream = null;
         try {
             outputStream = socket.getOutputStream();
-            outputStream.write("Hello, I'm a new Player".getBytes());
+            outputStream.write(message.getBytes());
         } catch (IOException e) {
             e.printStackTrace();
         }
-
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        closeSocket();
     }
     @SuppressLint("MissingPermission")
     public void sendGame(Game game){
-        try {
-            socket = device.createRfcommSocketToServiceRecord(UUID.fromString(MY_UUID));
-            socket.connect();
-            OutputStream outputStream = socket.getOutputStream();
-            outputStream.write(game.getGameFile().getBytes());
-            socket.close();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        sendStringToBoard(game.getGameFile());
     }
     @SuppressLint("MissingPermission")
     /**
@@ -111,24 +109,23 @@ public class BluetoothClient extends AsyncTask<Void, Void, Void> {
      * @return message
      */
     public String receiveStringFromBoard(){
+        String message = "0";
         try {
             @SuppressLint("MissingPermission")
-            BluetoothServerSocket serverSocket = adapter.listenUsingInsecureRfcommWithServiceRecord(device.getName(), UUID.fromString(MY_UUID));
+            BluetoothServerSocket serverSocket = adapter.listenUsingInsecureRfcommWithServiceRecord("receive_from_board", UUID.fromString(MY_UUID));
             socket = serverSocket.accept();
+            Thread.sleep(1000);
             InputStream inputStream = socket.getInputStream();
             byte[] buffer = new byte[1024];
             int bytes;
-            String message = "0";
             while((bytes = inputStream.read(buffer)) != -1){
                 message = new String(buffer, 0, bytes);
             }
-            serverSocket.close();
-            closeSocket();
-            return message;
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return "0";
+        closeSocket();
+        return message;
     }
 
     @SuppressLint("MissingPermission")

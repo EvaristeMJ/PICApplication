@@ -73,6 +73,16 @@ public class HttpConnection{
             System.out.println(e);
         }
     }
+    public boolean isSuccessful(){
+        try {
+            if(response.getString("status").equals("success")){
+                return true;
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
     public JSONObject getResponse(){
         return response;
     }

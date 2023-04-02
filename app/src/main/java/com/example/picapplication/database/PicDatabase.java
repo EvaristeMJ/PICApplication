@@ -53,7 +53,7 @@ public interface PicDatabase {
      * Changes the username of the user logged
      * @param newUsername
      */
-    public void changeUsername(String newUsername);
+    void changeUsername(String newUsername, String password);
 
     /**
      * Checks if the username is already in the database
@@ -72,13 +72,13 @@ public interface PicDatabase {
      * Changes the password of the user logged
      * @param newPassword
      */
-    public void changePassword(String newPassword);
+    public void changePassword(String newPassword,String oldPassword);
 
     /**
      * Deletes a user from the database
      * @param user
      */
-    public void deleteUser(User user);
+    public void deleteUser(User user, String password);
 
     /**
      * Adds a new game to the database

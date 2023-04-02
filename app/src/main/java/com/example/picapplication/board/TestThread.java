@@ -7,7 +7,6 @@ public class TestThread extends Thread{
     private PicBoardConnection picBoardConnection = new BoardConnection();
     private List<BoardMessage> boardMessages = new ArrayList<>();
     public TestThread(){
-        System.out.println("Creating test thread");
         start();
     }
     private void initBoardMessages(){

@@ -11,6 +11,8 @@ import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
@@ -20,6 +22,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+
+import com.example.picapplication.database.DatabaseHelper;
+import com.example.picapplication.database.PicDatabase;
 import com.example.picapplication.databinding.FragmentAccountBinding;
 
 import java.io.FileNotFoundException;
@@ -31,14 +36,21 @@ import java.util.Base64;
 public class AccountFragment extends Fragment {
 
     private FragmentAccountBinding binding;
+    private TextView username;
+    private ImageView profileImage;
+    private PicDatabase picDatabase = new DatabaseHelper();
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         AccountViewModel accountViewModel =
                 new ViewModelProvider(this).get(AccountViewModel.class);
-
         binding = FragmentAccountBinding.inflate(inflater, container, false);
+        username = binding.username;
+        profileImage = binding.profileImage;
+        username.setText(picDatabase.getUserLogged().getUsername());
+        profileImage.setImageBitmap(picDatabase.getUserLogged().getProfilePicture());
+        setListeners();
         View root = binding.getRoot();
 
         return root;

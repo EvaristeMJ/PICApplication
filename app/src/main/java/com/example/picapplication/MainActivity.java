@@ -36,6 +36,8 @@ public class MainActivity extends AppCompatActivity implements BoardMessageRecei
     private PicDatabase database = new DatabaseHelper();
     private PicBoardConnection boardConnection = new BoardConnection();
     private TextView navUserPlayer;
+    private TextView navUsername;
+    private ImageView navUserImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,9 +58,9 @@ public class MainActivity extends AppCompatActivity implements BoardMessageRecei
         DrawerLayout drawer = binding.drawerLayout;
         NavigationView navigationView = binding.navView;
         View headerView = navigationView.getHeaderView(0);
-        TextView navUsername = (TextView) headerView.findViewById(R.id.username);
+        navUsername = (TextView) headerView.findViewById(R.id.username);
         navUsername.setText(database.getUserLogged().getUsername());
-        ImageView navUserImage = (ImageView) headerView.findViewById(R.id.imageView);
+        navUserImage = (ImageView) headerView.findViewById(R.id.imageView);
         navUserImage.setImageBitmap(database.getUserLogged().getProfilePicture());
         navUserPlayer = (TextView) headerView.findViewById(R.id.PlayerInfo);
         navUserPlayer.setText("Not connected to a PIC board");

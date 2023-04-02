@@ -1,7 +1,6 @@
 package com.example.picapplication.database;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.StrictMode;
 
 import com.example.picapplication.utilities.BitmapMethod;
@@ -103,26 +102,25 @@ public class DatabaseHelper implements PicDatabase {
     @Override
     public void changeProfilePicture(String profilePicture) {
         HttpConnection httpConnection = new HttpConnection(url + serverSideUser);
-        httpConnection.addParam("username", userLogged.getUsername());
-        httpConnection.addParam("password", userLogged.getPassword());
         httpConnection.addParam("action", "change_profile_picture");
         httpConnection.addParam("profilePicture", profilePicture);
-        httpConnection.addParam("userId", String.valueOf(userLogged.getId()));
+        httpConnection.addParam("id", String.valueOf(userLogged.getId()));
         httpConnection.post();
         userLogged.setProfilePicture(BitmapMethod.decodeBitmap(profilePicture));
 
     }
 
     @Override
-    public void changeUsername(String newUsername) {
+    public void changeUsername(String newUsername, String password) {
         HttpConnection httpConnection = new HttpConnection(url + serverSideUser);
-        httpConnection.addParam("username", userLogged.getUsername());
-        httpConnection.addParam("password", userLogged.getPassword());
+        httpConnection.addParam("password", password);
         httpConnection.addParam("action", "change_username");
-        httpConnection.addParam("newUsername", newUsername);
+        httpConnection.addParam("username", newUsername);
         httpConnection.addParam("userId", String.valueOf(userLogged.getId()));
         httpConnection.post();
-        userLogged.setUsername(newUsername);
+        if(httpConnection.isSuccessful()){
+            userLogged.setUsername(newUsername);
+        }
     }
 
     @Override
@@ -136,7 +134,7 @@ public class DatabaseHelper implements PicDatabase {
     }
 
     @Override
-    public void changePassword(String newPassword) {
+    public void changePassword(String newPassword, String password) {
         HttpConnection httpConnection = new HttpConnection(url + serverSideUser);
         httpConnection.addParam("username", userLogged.getUsername());
         httpConnection.addParam("password", userLogged.getPassword());
@@ -147,15 +145,22 @@ public class DatabaseHelper implements PicDatabase {
     }
 
     @Override
-    public void deleteUser(User user) {
+    public void deleteUser(User user, String password) {
         HttpConnection httpConnection = new HttpConnection(url + serverSideUser);
         httpConnection.addParam("username", userLogged.getUsername());
         httpConnection.addParam("password", userLogged.getPassword());
         httpConnection.addParam("action", "delete");
-        httpConnection.addParam("profile_picture", BitmapMethod.encodeBitmap(userLogged.getProfilePicture()));
         httpConnection.addParam("id", String.valueOf(userLogged.getId()));
         httpConnection.post();
-        userLogged = null;
+        JSONObject response = httpConnection.getResponse();
+        try {
+            if(response.getString("status").equals("success")){
+                userLogged = null;
+                System.out.println("User deleted");
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -277,7 +282,15 @@ public class DatabaseHelper implements PicDatabase {
 
     @Override
     public void startPlayingGame(User user, Game game) {
-
+        /*
+        TODO : remove this comment
+        HttpConnection httpConnection = new HttpConnection(url + serverSideUserInteraction);
+        httpConnection.addParam("action", "start_playing");
+        httpConnection.addParam("gameid", String.valueOf(game.getId()));
+        httpConnection.addParam("userid", String.valueOf(user.getId()));
+        httpConnection.post();
+         */
+        gameSelected = game;
     }
     public void setGameSelected(Game gameSelected) {
         this.gameSelected = gameSelected;

@@ -9,6 +9,7 @@ import android.content.pm.PackageManager;
 import androidx.core.app.ActivityCompat;
 
 import com.example.picapplication.database.Game;
+import com.example.picapplication.database.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,7 +73,6 @@ public class BoardConnection implements PicBoardConnection {
     public void sendMessage(BoardMessage message) {
         for (BoardMessageReceiver receiver : receivers) {
             receiver.onReceive(message);
-            System.out.println("Message sent to " + receiver.toString()+ " : " + message.getMessage());
         }
     }
 
@@ -86,6 +86,12 @@ public class BoardConnection implements PicBoardConnection {
     @Override
     public void removeReceiver(BoardMessageReceiver receiver) {
         receivers.remove(receiver);
+    }
+
+    @Override
+    public List<User> getUsers() {
+        List<User> users = new ArrayList<>();
+        return null;
     }
 
     public static void setDevice(BluetoothDevice device) {

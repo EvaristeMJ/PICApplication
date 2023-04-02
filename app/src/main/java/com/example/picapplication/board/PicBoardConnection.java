@@ -1,6 +1,7 @@
 package com.example.picapplication.board;
 
 import com.example.picapplication.database.Game;
+import com.example.picapplication.database.User;
 
 import java.util.List;
 
@@ -47,4 +48,8 @@ public interface PicBoardConnection {
      * @param receiver
      */
     public void removeReceiver(BoardMessageReceiver receiver);
+    /**
+     * @return the list of users connected to the board
+     */
+    public List<User> getUsers();
 }

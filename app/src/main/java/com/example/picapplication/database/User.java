@@ -10,6 +10,7 @@ public class User {
     private int id;
     private int idBoard;
     private Bitmap profilePicture;
+    private boolean wantsAssistance;
     private ArrayList<Integer> gamesPlayed;
 
     public User(String username,String password,int id,Bitmap profilePicture){
@@ -18,6 +19,7 @@ public class User {
         this.id = id;
         this.idBoard = 0;
         gamesPlayed = new ArrayList<>();
+        wantsAssistance = false;
         this.profilePicture = profilePicture;
     }
 
@@ -27,6 +29,12 @@ public class User {
 
     public String getPassword() {
         return password;
+    }
+    public void setWantsAssistance(boolean wantsAssistance) {
+        this.wantsAssistance = wantsAssistance;
+    }
+    public boolean wantsAssistance() {
+        return wantsAssistance;
     }
 
     public void setGamesPlayed(String gamesPlayed) {

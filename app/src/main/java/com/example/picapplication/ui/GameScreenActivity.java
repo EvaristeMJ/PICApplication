@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.example.picapplication.board.TestThread;
+import com.example.picapplication.database.DatabaseHelper;
 import com.example.picapplication.databinding.ActivityGameScreenBinding;
 
 import com.example.picapplication.R;
@@ -27,7 +28,7 @@ import java.util.Locale;
 
 public class GameScreenActivity extends AppCompatActivity implements BoardMessageReceiver {
     private ActivityGameScreenBinding binding;
-    private PicDatabase database;
+    private PicDatabase database = new DatabaseHelper();
     private static int numInfo = 0;
     public boolean textToSpeechInitialized = true;
     private TextToSpeech textToSpeech;
@@ -41,9 +42,10 @@ public class GameScreenActivity extends AppCompatActivity implements BoardMessag
     private MaterialButton speakButton;
     private String ruleInfo = "Rule Information";
     private PicBoardConnection boardConnection = new BoardConnection();
-    private boolean shareCardInfoTTS = true;
-    private boolean shareRuleInfoTTS = true;
-    private boolean shareRuleInfo = true;
+    private boolean shareCardInfoTTS;
+    private boolean shareRuleInfoTTS;
+    private boolean shareRuleInfo;
+    private boolean ruleTurnMode = false;
     private static int num = 0;
 
     @Override
@@ -53,6 +55,9 @@ public class GameScreenActivity extends AppCompatActivity implements BoardMessag
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         boardConnection.addReceiver(this);
         setContentView(R.layout.activity_game_screen);
+        shareCardInfoTTS = database.getUserLogged().wantsAssistance();
+        shareRuleInfoTTS = database.getUserLogged().wantsAssistance() || ruleTurnMode;
+        shareRuleInfo = true;
         mainInfo = findViewById(R.id.firstInfo);
         secondInfo = findViewById(R.id.secondInfo);
         thirdInfo = findViewById(R.id.thirdInfo);
@@ -71,21 +76,18 @@ public class GameScreenActivity extends AppCompatActivity implements BoardMessag
                 }
             }
         });
-        /*
         Game game = database.getGameSelected();
         GameInfo gameInfo = game.getGameInfo();
         informationName = gameInfo.getNameInformation();
         information = gameInfo.getInformation();
-        binding.backgroundView.setImageBitmap(game.getImage());
+        //binding.backgroundView.setImageBitmap(game.getImage());
         updateView();
-         */
         setListeners();
-        initInformationTest();
-        updateView();
         if(num == 2){
             new TestThread();
         }
     }
+
     private void setListeners(){
         speakButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -104,13 +106,6 @@ public class GameScreenActivity extends AppCompatActivity implements BoardMessag
         if(shareCardInfoTTS){
             speak(cardInfo);
         }
-    }
-    //TODO: Remove initInformationTest() and initBoardMessages() later
-    private void initInformationTest(){
-        //String gameFile = GameInfo.gameFileToString("sampledata/game2.pic");
-        //GameInfo gameInfo = new GameInfo(gameFile);
-        informationName = new String[]{"Life points","Score","",""};
-        information = new String[]{"30.0","0.0","",""};
     }
 
     /**

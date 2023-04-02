@@ -14,6 +14,7 @@ import android.net.Uri;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.example.picapplication.R;
+import com.example.picapplication.utilities.Constants;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -55,11 +56,11 @@ public class Game {
     public static List<Game> initGameList(Resources resources) {
         ArrayList games = new ArrayList<Game>();
         Bitmap bitmap = drawableToBitmap(resources.getDrawable(R.drawable.ic_menu_camera));
-        games.add(new Game(1,"Game 1","Game 1 pitch","Game 1 description", bitmap,"Game 1 time","Game 1 rules","Game 1 file",0,"4"));
-        games.add(new Game(1,"Game 1","Game 1 pitch","Game 1 description", bitmap,"Game 1 time","Game 1 rules","Game 1 file",0,"4"));
-        games.add(new Game(1,"Game 1","Game 1 pitch","Game 1 description", bitmap,"Game 1 time","Game 1 rules","Game 1 file",0,"4"));
-        games.add(new Game(1,"Game 1","Game 1 pitch","Game 1 description", bitmap,"Game 1 time","Game 1 rules","Game 1 file",0,"4"));
-        games.add(new Game(1,"Game 1","Game 1 pitch","Game 1 description", bitmap,"Game 1 time","Game 1 rules","Game 1 file",0,"4"));
+        games.add(new Game(1,"Game 1","Game 1 pitch","Game 1 description", bitmap,"Game 1 time","Game 1 rules", Constants.TEST_GAME_FILE,0,"4"));
+        games.add(new Game(1,"Game 1","Game 1 pitch","Game 1 description", bitmap,"Game 1 time","Game 1 rules",Constants.TEST_GAME_FILE,0,"4"));
+        games.add(new Game(1,"Game 1","Game 1 pitch","Game 1 description", bitmap,"Game 1 time","Game 1 rules",Constants.TEST_GAME_FILE,0,"4"));
+        games.add(new Game(1,"Game 1","Game 1 pitch","Game 1 description", bitmap,"Game 1 time","Game 1 rules",Constants.TEST_GAME_FILE,0,"4"));
+        games.add(new Game(1,"Game 1","Game 1 pitch","Game 1 description", bitmap,"Game 1 time","Game 1 rules",Constants.TEST_GAME_FILE,0,"4"));
         return games;
     }
     // Getters and setters

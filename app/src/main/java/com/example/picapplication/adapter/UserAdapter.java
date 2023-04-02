@@ -18,27 +18,28 @@ import com.example.picapplication.board.PicBoardConnection;
 import com.example.picapplication.database.DatabaseHelper;
 import com.example.picapplication.database.Game;
 import com.example.picapplication.database.PicDatabase;
+import com.example.picapplication.database.User;
 import com.example.picapplication.ui.GameScreenActivity;
 
 import java.util.List;
 
-public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder>{
-    private List<Game> games;
+public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder>{
+    private List<User> users;
     private PicBoardConnection picBoardConnection = new BoardConnection();
     private PicDatabase picDatabase = new DatabaseHelper();
     private ViewGroup parent;
 
-    public GameAdapter(List<Game> games) {
-        this.games = games;
+    public UserAdapter(List<User> users) {
+        this.users = users;
     }
 
     @NonNull
     @Override
-    public GameViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public UserViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         this.parent = parent;
-        return new GameViewHolder(
+        return new UserViewHolder(
                 LayoutInflater.from(parent.getContext()).inflate(
-                        R.layout.game_presentation_item,
+                        R.layout.user_hub_item,
                         parent,
                         false
                 )
@@ -46,36 +47,35 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder
     }
 
     @Override
-    public void onBindViewHolder(@NonNull GameViewHolder holder, int position) {
-        holder.bindGame(games.get(position));
+    public void onBindViewHolder(@NonNull UserViewHolder holder, int position) {
+        holder.bindUser(users.get(position));
     }
 
     @Override
     public int getItemCount() {
-        return games.size();
+        return users.size();
     }
 
-    class GameViewHolder extends RecyclerView.ViewHolder{
+    class UserViewHolder extends RecyclerView.ViewHolder{
         ConstraintLayout constraintLayout;
-        ImageView gameIcon;
-        TextView gameName,gamePitch;
-        View playButton;
-        public GameViewHolder(@NonNull View itemView) {
+        ImageView profileImage;
+        TextView username;
+        public UserViewHolder(@NonNull View itemView) {
             super(itemView);
-            constraintLayout = itemView.findViewById(R.id.layout_game_presentation_item);
-            gameIcon = itemView.findViewById(R.id.gameIcon);
-            gameName = itemView.findViewById(R.id.gameName);
-            gamePitch = itemView.findViewById(R.id.gamePitch);
-            playButton = itemView.findViewById(R.id.playButton);
+            constraintLayout = itemView.findViewById(R.id.layout_game_creation_item);
+            profileImage = itemView.findViewById(R.id.profileImage);
+            username = itemView.findViewById(R.id.username);
             setListeners();
         }
-        void bindGame(final Game game){
-            Bitmap bitmap = game.getImage();
-            gameIcon.setImageBitmap(bitmap);
-            gameName.setText(game.getGameName());
-            gamePitch.setText(game.getGamePitch());
+        void bindUser(final User user){
+            Bitmap bitmap = user.getProfilePicture();
+            profileImage.setImageBitmap(bitmap);
+            username.setText(user.getUsername());
+
         }
         void setListeners(){
+            /*
+
             playButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -86,7 +86,7 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder
                         parent.getContext().startActivity(new Intent(parent.getContext(), GameScreenActivity.class));
                     }
                 }
-        });
+        });*/
     }
 }
 }
