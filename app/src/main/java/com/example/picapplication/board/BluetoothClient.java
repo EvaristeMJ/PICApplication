@@ -15,6 +15,7 @@ import androidx.core.app.ActivityCompat;
 import com.example.picapplication.database.DatabaseHelper;
 import com.example.picapplication.database.Game;
 import com.example.picapplication.database.PicDatabase;
+import com.example.picapplication.database.User;
 import com.example.picapplication.utilities.Constants;
 
 import java.io.IOException;
@@ -23,6 +24,7 @@ import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.ServerSocket;
+import java.util.List;
 import java.util.UUID;
 
 public class BluetoothClient extends AsyncTask<Void, Void, Void> {
@@ -38,7 +40,6 @@ public class BluetoothClient extends AsyncTask<Void, Void, Void> {
     public BluetoothClient(BluetoothDevice device) {
         this.device = device;
         this.adapter = BluetoothAdapter.getDefaultAdapter();
-
     }
 
     public BluetoothSocket getSocket() {
@@ -126,6 +127,26 @@ public class BluetoothClient extends AsyncTask<Void, Void, Void> {
         }
         closeSocket();
         return message;
+    }
+
+    /**
+     * Sends a message to get the players connected to the board
+     * and returns a list of users
+     * @return
+     */
+    public List<User> getPlayers(){
+        List<User> players = null;
+        sendStringToBoard("get_players");
+        String message = receiveStringFromBoard();
+        if(message.equals("0")){
+            return null;
+        }
+        String[] playersId = message.split(",");
+        for(int i = 0; i < playersId.length; i++){
+            int id = Integer.parseInt(playersId[i]);
+            User user = User.createDisplayUser(database.getUsernameFromId(id),null); // TODO put a real image instead of null
+        }
+        return players;
     }
 
     @SuppressLint("MissingPermission")

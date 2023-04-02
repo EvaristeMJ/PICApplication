@@ -91,6 +91,9 @@ public class BoardConnection implements PicBoardConnection {
     @Override
     public List<User> getUsers() {
         List<User> users = new ArrayList<>();
+        if(client != null){
+            users = client.getPlayers();
+        }
         return null;
     }
 

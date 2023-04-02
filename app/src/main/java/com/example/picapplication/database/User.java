@@ -2,6 +2,8 @@ package com.example.picapplication.database;
 
 import android.graphics.Bitmap;
 
+import com.example.picapplication.utilities.BitmapMethod;
+
 import java.util.ArrayList;
 
 public class User {
@@ -21,6 +23,17 @@ public class User {
         gamesPlayed = new ArrayList<>();
         wantsAssistance = false;
         this.profilePicture = profilePicture;
+    }
+
+    /**
+     * Creates a user with only the username and the profile picture
+     * Only used for displaying the user
+     * @param username the username of the user
+     * @param profilePicture the profile picture of the user
+     * @return the user created with only the username and the profile picture
+     */
+    public static User createDisplayUser(String username,Bitmap profilePicture){
+        return new User(username,"",0, BitmapMethod.getDefaultProfilePicture());
     }
 
     public String getUsername() {
