@@ -55,7 +55,7 @@ public class BluetoothClient extends AsyncTask<Void, Void, Void> {
     @SuppressLint("MissingPermission")
     public int connection(){
         int result = 0;
-        sendStringToBoard(userid);
+        sendStringToBoard(userid,"send_a_string_to_board");
         System.out.println("sent username");
         String message = receiveStringFromBoard();
         System.out.println("received message");
@@ -76,9 +76,9 @@ public class BluetoothClient extends AsyncTask<Void, Void, Void> {
         }
     }
     @SuppressLint("MissingPermission")
-    public void sendStringToBoard(String message){
+    public void sendStringToBoard(String message,String serviceName){
         try {
-            BluetoothServerSocket serverSocket = adapter.listenUsingInsecureRfcommWithServiceRecord("PIC", UUID.fromString(MY_UUID));
+            BluetoothServerSocket serverSocket = adapter.listenUsingInsecureRfcommWithServiceRecord(serviceName, UUID.fromString(MY_UUID));
             socket = serverSocket.accept();
         } catch (Exception e) {
             e.printStackTrace();
@@ -100,7 +100,7 @@ public class BluetoothClient extends AsyncTask<Void, Void, Void> {
     }
     @SuppressLint("MissingPermission")
     public void sendGame(Game game){
-        sendStringToBoard(game.getGameFile());
+        sendStringToBoard(game.getGameFile(),"send_the_game_to_board");
     }
     @SuppressLint("MissingPermission")
     /**
@@ -136,7 +136,7 @@ public class BluetoothClient extends AsyncTask<Void, Void, Void> {
      */
     public List<User> getPlayers(){
         List<User> players = null;
-        sendStringToBoard("get_players");
+        sendStringToBoard("get_players","send_a_string_to_board");
         String message = receiveStringFromBoard();
         if(message.equals("0")){
             return null;

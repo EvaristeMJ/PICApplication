@@ -31,10 +31,10 @@ public class SignInActivity extends AppCompatActivity {
         binding.textCreateNewAccount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DatabaseHelper databaseHelper =  (DatabaseHelper) picDatabase;
-                databaseHelper.defaultLogin();
-                //startActivity(new Intent(getApplicationContext(), SignUpActivity.class)); TODO uncomment this line
-                startActivity(new Intent(getApplicationContext(), MainActivity.class)); //TODO remove this line
+                //DatabaseHelper databaseHelper =  (DatabaseHelper) picDatabase;
+                //databaseHelper.defaultLogin();
+                startActivity(new Intent(getApplicationContext(), SignUpActivity.class));
+                //startActivity(new Intent(getApplicationContext(), MainActivity.class)); //TODO remove this line
             }
         });
         binding.buttonSignIn.setOnClickListener(new View.OnClickListener() {
@@ -47,7 +47,7 @@ public class SignInActivity extends AppCompatActivity {
     public boolean isValidSignInDetails(){
 
         if(binding.inputUsername.getText().toString().trim().isEmpty()){
-            showToast("Enter email");
+            showToast("Enter username");
             return false;
         }
         else if(binding.inputPassword.getText().toString().trim().isEmpty()){

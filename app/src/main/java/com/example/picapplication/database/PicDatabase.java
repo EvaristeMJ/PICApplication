@@ -33,6 +33,11 @@ public interface PicDatabase {
     public int logUser(String username, String password);
 
     /**
+     * Set the assistance parameter of the user logged
+     * @param assistance the assistance parameter
+     */
+    public void setAssistance(boolean assistance);
+    /**
      * Updates a game in the database
      * @param gameId
      * @param gameName

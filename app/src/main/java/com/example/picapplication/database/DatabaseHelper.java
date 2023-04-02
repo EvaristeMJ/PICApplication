@@ -57,15 +57,27 @@ public class DatabaseHelper implements PicDatabase {
             if(response.getString("status").equals("success")){
                 userLogged = new User(username, password, response.getInt("userid"), defaultProfilePicture);
                 System.out.println("User logged: " + userLogged.getUsername());
-                return 0;
-            }else{
-                return response.getInt("error");
+                return response.getInt("userid");
+            }
+            else{
+                System.out.println("Not found");
+                return -1;
             }
         } catch (JSONException e) {
             e.printStackTrace();
         }
         return -1;
     }
+
+    @Override
+    public void setAssistance(boolean assistance) {
+        if(userLogged != null){
+            userLogged.setWantsAssistance(assistance);
+            HttpConnection httpConnection = new HttpConnection(url + serverSideUser);
+            httpConnection.addParam("action", "set_assistance");
+            httpConnection.addParam("id", ""+userLogged.getId());}
+    }
+
     @Override
     public String getUsernameFromId(int id){
         HttpConnection httpConnection = new HttpConnection(url + serverSideUser);
@@ -125,6 +137,18 @@ public class DatabaseHelper implements PicDatabase {
 
     @Override
     public boolean checkUsername(String username) {
+        HttpConnection httpConnection = new HttpConnection(url + serverSideUser);
+        httpConnection.addParam("action", "check_username");
+        httpConnection.addParam("username", username);
+        httpConnection.post();
+        JSONObject response = httpConnection.getResponse();
+        try {
+            if(response.getString("status").equals("Username true"))
+            return true;
+            else return false;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         return false;
     }
 
