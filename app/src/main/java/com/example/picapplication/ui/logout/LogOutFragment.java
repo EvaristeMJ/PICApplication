@@ -23,7 +23,7 @@ public class LogOutFragment extends Fragment {
         return null;
     }
     private void signOut() {
-        startActivity(new Intent(null, SignInActivity.class));
+        startActivity(new Intent(getActivity(), SignInActivity.class));
     }
     @Override
     public void onDestroyView() {

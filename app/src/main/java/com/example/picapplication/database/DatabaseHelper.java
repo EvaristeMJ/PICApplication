@@ -56,6 +56,7 @@ public class DatabaseHelper implements PicDatabase {
         try {
             if(response.getString("status").equals("success")){
                 userLogged = new User(username, password, response.getInt("userid"), defaultProfilePicture);
+                userLogged.setWantsAssistance(response.getInt("assistance") == 1);
                 System.out.println("User logged: " + userLogged.getUsername());
                 return response.getInt("userid");
             }
@@ -75,7 +76,15 @@ public class DatabaseHelper implements PicDatabase {
             userLogged.setWantsAssistance(assistance);
             HttpConnection httpConnection = new HttpConnection(url + serverSideUser);
             httpConnection.addParam("action", "set_assistance");
-            httpConnection.addParam("id", ""+userLogged.getId());}
+            httpConnection.addParam("id", ""+userLogged.getId());
+            if(assistance){
+                httpConnection.addParam("assistance", "1");
+            }
+            else{
+                httpConnection.addParam("assistance", "0");
+            }
+            httpConnection.post();
+        }
     }
 
     @Override

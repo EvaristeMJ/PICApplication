@@ -19,6 +19,7 @@ import com.example.picapplication.database.DatabaseHelper;
 import com.example.picapplication.database.Game;
 import com.example.picapplication.database.PicDatabase;
 import com.example.picapplication.ui.GameScreenActivity;
+import com.example.picapplication.ui.HubActivity;
 
 import java.util.List;
 
@@ -82,8 +83,8 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder
                     if(!picBoardConnection.isConnected()){ // TODO change to isConnected
                         picDatabase.startPlayingGame(picDatabase.getUserLogged(),games.get(getAdapterPosition()));
                         picBoardConnection.loadGame(games.get(getAdapterPosition()));
-                        // start Game Screen Activity
-                        parent.getContext().startActivity(new Intent(parent.getContext(), GameScreenActivity.class));
+                        // start HubActivity
+                        parent.getContext().startActivity(new Intent(parent.getContext(), HubActivity.class));
                     }
                 }
         });

@@ -15,6 +15,7 @@ import com.example.picapplication.board.PicBoardConnection;
 import com.example.picapplication.database.DatabaseHelper;
 import com.example.picapplication.database.PicDatabase;
 import com.example.picapplication.ui.GameScreenActivity;
+import com.example.picapplication.ui.HubActivity;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
 
@@ -84,14 +85,11 @@ public class MainActivity extends AppCompatActivity implements BoardMessageRecei
      */
     @Override
     public void onReceive(BoardMessage message) {
-        /*
         if(message.getType() == BoardMessage.GAME_START){
             GameMessage gameMessage = (GameMessage) message;
             database.setGameSelected(gameMessage.getGame());
-            startActivity(new Intent(this, GameScreenActivity.class));
+            startActivity(new Intent(this, HubActivity.class));
         }
-
-         */
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
