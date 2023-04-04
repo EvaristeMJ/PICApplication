@@ -52,4 +52,13 @@ public interface PicBoardConnection {
      * @return the list of users connected to the board
      */
     public List<User> getUsers();
+    /**
+     * set the rule mode
+     * @param ruleMode true if the rule mode is activated
+     */
+    public void setRuleMode(boolean ruleMode);
+    /**
+     * @return true if the rule mode is activated
+     */
+    public boolean getRuleMode();
 }

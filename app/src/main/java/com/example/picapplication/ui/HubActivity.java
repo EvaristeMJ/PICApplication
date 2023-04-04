@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.CheckBox;
 
 import com.example.picapplication.R;
 import com.example.picapplication.adapter.UserAdapter;
@@ -21,6 +22,8 @@ public class HubActivity extends AppCompatActivity {
     private PicBoardConnection boardConnection = new BoardConnection();
     private ActivityHubBinding binding;
     private MaterialButton launchGameButton;
+    private CheckBox ruleTurnMode;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,10 +32,26 @@ public class HubActivity extends AppCompatActivity {
         players = boardConnection.getUsers();
         binding.userHubList.setAdapter(new UserAdapter(players));
         launchGameButton = binding.launchGame;
+        ruleTurnMode = binding.checkBox;
         launchGameButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(getApplicationContext(), GameScreenActivity.class));
+            }
+        });
+    }
+
+    private void setListeners() {
+        launchGameButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getApplicationContext(), GameScreenActivity.class));
+            }
+        });
+        ruleTurnMode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                boardConnection.setRuleMode(ruleTurnMode.isChecked());
             }
         });
     }

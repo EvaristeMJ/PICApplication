@@ -45,13 +45,14 @@ public class GameScreenActivity extends AppCompatActivity implements BoardMessag
     private boolean shareCardInfoTTS;
     private boolean shareRuleInfoTTS;
     private boolean shareRuleInfo;
-    private boolean ruleTurnMode = false;
+    private boolean ruleTurnMode;
     private static int num = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         num++;
+        ruleTurnMode = boardConnection.getRuleMode();
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         boardConnection.addReceiver(this);
         setContentView(R.layout.activity_game_screen);

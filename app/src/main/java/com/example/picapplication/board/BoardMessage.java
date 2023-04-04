@@ -27,13 +27,19 @@ public class BoardMessage {
     }
     /**
      * Creates a new board message
-     * the first character of the message is the type of the message
+     * The type of the message is in the first characters before the first ','
+     * The message is after ','
      * then the message
      * @param message the message
      */
     public BoardMessage(String message){
-        this.message = message.substring(1);
-        this.type = Integer.parseInt(message.substring(0,1));
+        for(int i = 0; i < message.length(); i++){
+            if(message.charAt(i) == ','){
+                this.type = Integer.parseInt(message.substring(0, i));
+                this.message = message.substring(i + 1);
+                return;
+            }
+        }
     }
     private int type;
     /**

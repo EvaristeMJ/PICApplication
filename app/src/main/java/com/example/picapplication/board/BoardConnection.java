@@ -23,6 +23,7 @@ public class BoardConnection implements PicBoardConnection {
     private static boolean connected = false;
     private static final String KEY_NAME_BOARD = "ROG";
     private static String stringMessage;
+    private static boolean ruleMode = false;
 
     /**
      * Connects to the board with bluetooth
@@ -95,6 +96,16 @@ public class BoardConnection implements PicBoardConnection {
             users = client.getPlayers();
         }
         return null;
+    }
+
+    @Override
+    public void setRuleMode(boolean ruleMode) {
+        this.ruleMode = ruleMode;
+    }
+
+    @Override
+    public boolean getRuleMode() {
+        return ruleMode;
     }
 
     public static void setDevice(BluetoothDevice device) {
