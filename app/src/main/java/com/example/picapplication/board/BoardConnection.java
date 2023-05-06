@@ -1,87 +1,68 @@
 package com.example.picapplication.board;
 
-import android.Manifest;
-import android.annotation.SuppressLint;
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
-import android.content.pm.PackageManager;
+import android.os.AsyncTask;
 
-import androidx.core.app.ActivityCompat;
-
+import com.example.picapplication.database.DatabaseHelper;
 import com.example.picapplication.database.Game;
+import com.example.picapplication.database.PicDatabase;
 import com.example.picapplication.database.User;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class BoardConnection implements PicBoardConnection {
-    public static final int CONNECTION_FAILED = 0;
+public class BoardConnection implements PicBoardConnection{
+    private PicDatabase database = new DatabaseHelper();
+    private static int CONNECTION_SUCCESS = 0;
+    private static int CONNECTION_FAILED = -1;
     private static List<BoardMessageReceiver> receivers = new ArrayList<>();
-    private static BluetoothClient client;
-    private static BluetoothDevice device;
-    private static final BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
-    private static boolean connected = false;
-    private static final String KEY_NAME_BOARD = "ROG";
-    private static String stringMessage;
     private static boolean ruleMode = false;
-
-    /**
-     * Connects to the board with bluetooth
-     * returns the player id on the board (1 to 4)
-     * returns 0 if the connection failed
-     * @return
-     */
+    WiFiConnection connection;
     @Override
     public int connect() {
-        setDevice();
-        if (adapter.isEnabled() && device != null) {
-            client = new BluetoothClient(device);
-            connected = true;
-            return client.connection();
+        connection = new WiFiConnection();
+        int result = connection.connect();
+        if(result == CONNECTION_SUCCESS){
+            connection.send(database.getUserLogged().getUsername());
+            connection.send(database.getUserLogged().getId()+"");
+            return Integer.parseInt(connection.receive().get(0));
         }
-        return CONNECTION_FAILED;
+        else{
+            return CONNECTION_FAILED;
+        }
     }
 
     @Override
     public void disconnect() {
-        if (client != null) {
-            client.cancel(true);
-            connected = false;
-        }
+        connection.disconnect();
     }
 
     @Override
     public boolean isConnected() {
-        return connected;
+        return connection.isConnected();
     }
 
     @Override
     public void resetBoard() {
     }
 
-    /**
-     * Send the game to the board
-     * @param game
-     */
     @Override
     public void loadGame(Game game) {
-        if(client != null){
-            client.sendGame(game);
-        }
+        connection.sendGame(game);
     }
 
     @Override
     public void sendMessage(BoardMessage message) {
-        for (BoardMessageReceiver receiver : receivers) {
-            receiver.onReceive(message);
+        connection.send(message.getMessage());
+    }
+    public void receiveMessage(String message){
+        for(BoardMessageReceiver receiver : receivers){
+            receiver.onReceive(new BoardMessage(message));
         }
     }
 
     @Override
     public void addReceiver(BoardMessageReceiver receiver) {
-        if(!receivers.contains(receiver)){
-            receivers.add(receiver);
-        }
+        receivers.add(receiver);
     }
 
     @Override
@@ -91,43 +72,29 @@ public class BoardConnection implements PicBoardConnection {
 
     @Override
     public List<User> getUsers() {
+        connection.send("get_users");
+        List<String> usersId = connection.receive();
         List<User> users = new ArrayList<>();
-        if(client != null){
-            users = client.getPlayers();
+        for(String id : usersId){
+            String username = database.getUsernameFromId(Integer.parseInt(id));
+            users.add(User.createDisplayUser(username,null));
         }
-        return null;
+        return users;
     }
 
     @Override
     public void setRuleMode(boolean ruleMode) {
+        if(ruleMode){
+            connection.send("rule_mode");
+        }
+        else{
+            connection.send("game_mode");
+        }
         this.ruleMode = ruleMode;
     }
 
     @Override
     public boolean getRuleMode() {
         return ruleMode;
-    }
-
-    public static void setDevice(BluetoothDevice device) {
-        BoardConnection.device = device;
-    }
-
-    public void sendMessage(String message) {
-        sendMessage(new BoardMessage(message));
-    }
-
-
-    @SuppressLint("MissingPermission")
-    /**
-     * Search in the paired devices one with KEY_NAME_BOARD in it
-     * Then sets the device
-     */
-    private static void setDevice() {
-        //TODO check permissions
-        for (BluetoothDevice device : adapter.getBondedDevices()) {
-            if (device.getName()!= null && device.getName().contains(KEY_NAME_BOARD)) {
-                BoardConnection.setDevice(device);
-            }
-        }
     }
 }

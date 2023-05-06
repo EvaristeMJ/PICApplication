@@ -34,7 +34,11 @@ public interface PicBoardConnection {
      */
     public void loadGame(Game game);
     /**
-     * Send a message to the receivers
+     * Receive a message from the board
+     */
+    public void receiveMessage(String message);
+    /**
+     * Send a message to the board
      */
     public void sendMessage(BoardMessage message);
 

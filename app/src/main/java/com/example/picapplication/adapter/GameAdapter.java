@@ -12,20 +12,20 @@ import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.picapplication.HubActivity;
 import com.example.picapplication.R;
-import com.example.picapplication.board.BoardConnection;
+import com.example.picapplication.board.BluetoothBoardConnection;
 import com.example.picapplication.board.PicBoardConnection;
 import com.example.picapplication.database.DatabaseHelper;
 import com.example.picapplication.database.Game;
 import com.example.picapplication.database.PicDatabase;
 import com.example.picapplication.ui.GameScreenActivity;
-import com.example.picapplication.ui.HubActivity;
 
 import java.util.List;
 
 public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder>{
     private List<Game> games;
-    private PicBoardConnection picBoardConnection = new BoardConnection();
+    private PicBoardConnection picBoardConnection = new BluetoothBoardConnection();
     private PicDatabase picDatabase = new DatabaseHelper();
     private ViewGroup parent;
 
@@ -82,7 +82,10 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder
                 public void onClick(View v) {
                     if(!picBoardConnection.isConnected()){ // TODO change to isConnected
                         picDatabase.startPlayingGame(picDatabase.getUserLogged(),games.get(getAdapterPosition()));
-                        picBoardConnection.loadGame(games.get(getAdapterPosition()));
+                        //picBoardConnection.loadGame(games.get(getAdapterPosition()));
+                        Game gameTest = new Game();
+                        gameTest.setGameFile("test");
+
                         // start HubActivity
                         parent.getContext().startActivity(new Intent(parent.getContext(), HubActivity.class));
                     }

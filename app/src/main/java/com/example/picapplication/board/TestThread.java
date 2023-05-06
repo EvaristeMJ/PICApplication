@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TestThread extends Thread{
-    private PicBoardConnection picBoardConnection = new BoardConnection();
+    private PicBoardConnection picBoardConnection = new BluetoothBoardConnection();
     private List<BoardMessage> boardMessages = new ArrayList<>();
     public TestThread(){
         start();
@@ -15,7 +15,9 @@ public class TestThread extends Thread{
         boardMessages.add(new BoardMessage("Ace of clubs",BoardMessage.CARD_INFORMATION));
         boardMessages.add(new BoardMessage("You can play either an ace or a clubs",BoardMessage.RULE_INFORMATION));
         boardMessages.add(new BoardMessage("7.0",BoardMessage.SECOND_INFORMATION));
+        boardMessages.add(new BoardMessage("You can play a heart",BoardMessage.RULE_INFORMATION));
         boardMessages.add(new BoardMessage("10.0",BoardMessage.SECOND_INFORMATION));
+        boardMessages.add(new BoardMessage("You must play a King after a Queen",BoardMessage.RULE_INFORMATION));
         boardMessages.add(new BoardMessage("20.0",BoardMessage.MAIN_INFORMATION));
     }
     @Override

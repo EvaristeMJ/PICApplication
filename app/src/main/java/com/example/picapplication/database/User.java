@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import com.example.picapplication.utilities.BitmapMethod;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class User {
     private String username;
@@ -65,6 +66,13 @@ public class User {
             }
         }
         return games;
+    }
+    public static List<User> createTestDisplayUsers(int nbUsers){
+        List<User> users = new ArrayList<>();
+        for(int i = 0; i < nbUsers; i++){
+            users.add(createDisplayUser("User"+i,BitmapMethod.getDefaultProfilePicture()));
+        }
+        return users;
     }
     public void setIdBoard(int idBoard) {
         this.idBoard = idBoard;

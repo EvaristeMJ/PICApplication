@@ -7,15 +7,13 @@ import android.view.Menu;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.picapplication.board.BoardConnection;
+import com.example.picapplication.board.BluetoothBoardConnection;
 import com.example.picapplication.board.BoardMessage;
 import com.example.picapplication.board.BoardMessageReceiver;
 import com.example.picapplication.board.GameMessage;
 import com.example.picapplication.board.PicBoardConnection;
 import com.example.picapplication.database.DatabaseHelper;
 import com.example.picapplication.database.PicDatabase;
-import com.example.picapplication.ui.GameScreenActivity;
-import com.example.picapplication.ui.HubActivity;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
 
@@ -28,14 +26,12 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.picapplication.databinding.ActivityMainBinding;
 
-import org.w3c.dom.Text;
-
 public class MainActivity extends AppCompatActivity implements BoardMessageReceiver {
 
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityMainBinding binding;
     private PicDatabase database = new DatabaseHelper();
-    private PicBoardConnection boardConnection = new BoardConnection();
+    private PicBoardConnection boardConnection = new BluetoothBoardConnection();
     private TextView navUserPlayer;
     private TextView navUsername;
     private ImageView navUserImage;

@@ -1,29 +1,20 @@
 package com.example.picapplication.board;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothGattServerCallback;
 import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
-import android.content.pm.PackageManager;
 import android.os.AsyncTask;
-
-import androidx.core.app.ActivityCompat;
 
 import com.example.picapplication.database.DatabaseHelper;
 import com.example.picapplication.database.Game;
 import com.example.picapplication.database.PicDatabase;
 import com.example.picapplication.database.User;
-import com.example.picapplication.utilities.Constants;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.net.ServerSocket;
 import java.util.List;
 import java.util.UUID;
 
@@ -34,7 +25,7 @@ public class BluetoothClient extends AsyncTask<Void, Void, Void> {
     private String message;
     private String userid = "1";
     private PicDatabase database = new DatabaseHelper();
-    private BoardConnection boardConnection = new BoardConnection();
+    private BluetoothBoardConnection boardConnection = new BluetoothBoardConnection();
     private static final String MY_UUID = "00001101-0000-1000-8000-00805F9B34FB";
 
     public BluetoothClient(BluetoothDevice device) {
@@ -61,10 +52,10 @@ public class BluetoothClient extends AsyncTask<Void, Void, Void> {
         System.out.println("received message");
         result = Integer.parseInt(message);
         // test sending
-        Game game = new Game();
-        game.setGameFile(Constants.TEST_GAME_FILE);
-        sendGame(game);
         System.out.println("sent game");
+        Game game = new Game();
+        game.setGameFile("test");
+        sendGame(game);
         // get the id from the message
         return result;
     }
@@ -117,7 +108,7 @@ public class BluetoothClient extends AsyncTask<Void, Void, Void> {
             socket = serverSocket.accept();
             Thread.sleep(1000);
             InputStream inputStream = socket.getInputStream();
-            byte[] buffer = new byte[1024];
+            byte[] buffer = new byte[10240000];
             int bytes;
             while((bytes = inputStream.read(buffer)) != -1){
                 message = new String(buffer, 0, bytes);

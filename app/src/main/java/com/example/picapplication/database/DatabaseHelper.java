@@ -56,7 +56,8 @@ public class DatabaseHelper implements PicDatabase {
         try {
             if(response.getString("status").equals("success")){
                 userLogged = new User(username, password, response.getInt("userid"), defaultProfilePicture);
-                userLogged.setWantsAssistance(response.getInt("assistance") == 1);
+                //userLogged.setWantsAssistance(response.getInt("assistance") == 1);
+                userLogged.setWantsAssistance(false);
                 System.out.println("User logged: " + userLogged.getUsername());
                 return response.getInt("userid");
             }

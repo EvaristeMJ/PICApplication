@@ -2,7 +2,6 @@ package com.example.picapplication.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.Activity;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
@@ -14,7 +13,7 @@ import com.example.picapplication.database.DatabaseHelper;
 import com.example.picapplication.databinding.ActivityGameScreenBinding;
 
 import com.example.picapplication.R;
-import com.example.picapplication.board.BoardConnection;
+import com.example.picapplication.board.BluetoothBoardConnection;
 import com.example.picapplication.board.BoardMessage;
 import com.example.picapplication.board.BoardMessageReceiver;
 import com.example.picapplication.board.PicBoardConnection;
@@ -27,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 public class GameScreenActivity extends AppCompatActivity implements BoardMessageReceiver {
+    private ArrayList<String> rules = new ArrayList<>();
     private ActivityGameScreenBinding binding;
     private PicDatabase database = new DatabaseHelper();
     private static int numInfo = 0;
@@ -41,7 +41,7 @@ public class GameScreenActivity extends AppCompatActivity implements BoardMessag
     private String cardInfo;
     private MaterialButton speakButton;
     private String ruleInfo = "Rule Information";
-    private PicBoardConnection boardConnection = new BoardConnection();
+    private PicBoardConnection boardConnection = new BluetoothBoardConnection();
     private boolean shareCardInfoTTS;
     private boolean shareRuleInfoTTS;
     private boolean shareRuleInfo;
@@ -52,7 +52,8 @@ public class GameScreenActivity extends AppCompatActivity implements BoardMessag
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         num++;
-        ruleTurnMode = boardConnection.getRuleMode();
+        //ruleTurnMode = boardConnection.getRuleMode();
+        ruleTurnMode = true;
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         boardConnection.addReceiver(this);
         setContentView(R.layout.activity_game_screen);
@@ -77,16 +78,19 @@ public class GameScreenActivity extends AppCompatActivity implements BoardMessag
                 }
             }
         });
+        speakButton.setText("Card");
         Game game = database.getGameSelected();
         GameInfo gameInfo = game.getGameInfo();
         informationName = gameInfo.getNameInformation();
         information = gameInfo.getInformation();
+        fourthInfo.setText("Rule :");
+        //launch test thread
+        if(num == 2){
+            TestThread testThread = new TestThread();
+        }
         //binding.backgroundView.setImageBitmap(game.getImage());
         updateView();
         setListeners();
-        if(num == 2){
-            new TestThread();
-        }
     }
 
     private void setListeners(){
@@ -121,8 +125,7 @@ public class GameScreenActivity extends AppCompatActivity implements BoardMessag
     private void updateView(){
         mainInfo.setText(informationName[0] + " : " + information[0]);
         secondInfo.setText(informationName[1] + " : " + information[1]);
-        thirdInfo.setText(informationName[2] + " : " + information[2]);
-        fourthInfo.setText("Rule : " + ruleInfo);
+        thirdInfo.setText("");
     }
     private void handleMessage(BoardMessage message){
         if(numInfo == 10){
@@ -133,7 +136,8 @@ public class GameScreenActivity extends AppCompatActivity implements BoardMessag
             case BoardMessage.RULE_INFORMATION:
                 if(shareRuleInfo){
                     ruleInfo = message.getMessage();
-                    updateView();
+                    addRule(ruleInfo);
+                    updateRuleDisplay();
                     if(shareRuleInfoTTS){
                         shareRuleInfo();
                     }
@@ -165,6 +169,32 @@ public class GameScreenActivity extends AppCompatActivity implements BoardMessag
         numInfo++;
         updateView();
     }
+    private void updateRuleDisplay(){
+        String ruleText ="";
+        for(int i = 0; i < rules.size(); i++){
+            ruleText += "Rule : ";
+            ruleText += rules.get(i);
+            if(i != rules.size() - 1){
+                ruleText += "\n";
+            }
+        }
+        fourthInfo.setText(ruleText);
+    }
+
+    /**
+     * This method is called when a rule is added to the board
+     * Add a rule to the list of rules
+     * Limit the number of rules to 3
+     * First in first out
+     * @param rule
+     */
+    private void addRule(String rule){
+        if(rules.size() == 3){
+            rules.remove(0);
+        }
+        rules.add(rule);
+    }
+
 
     /**
      * This method is called when a message is received from the board

@@ -65,7 +65,6 @@ public class HttpConnection{
             }
             in.close();
             con.disconnect();
-            System.out.println(response.toString());
             //printing result from response
             this.response = new JSONObject(response.toString());
         }
